@@ -73,3 +73,10 @@ div.popoverTrigger {
   margin-inline-start: 0;
   margin-inline-end: 0;
 }
+
+// FORK: hide-ayah memorization mode — blur the Arabic glyph, keep it in the DOM
+.hideAyahBlurred {
+  display: inline-block;
+  filter: blur(6px);
+  transition: filter 0.15s ease;
+}

@@ -23,13 +23,17 @@ import MobilePopover from '@/dls/Popover/HoverablePopover';
 import useIsMobile from '@/hooks/useIsMobile';
 import ArrowIcon from '@/icons/arrow.svg';
 import { selectShowTooltipWhenPlayingAudio } from '@/redux/slices/AudioPlayer/state';
+import { selectIsHideAyahEnabled } from '@/redux/slices/QuranReader/hideAyah';
 import {
   selectInlineDisplayWordByWordPreferences,
   selectReadingPreference,
   selectTooltipContentType,
   selectWordClickFunctionality,
 } from '@/redux/slices/QuranReader/readingPreferences';
-import { setReadingViewHoveredVerseKey } from '@/redux/slices/QuranReader/readingViewVerse';
+import {
+  selectReadingViewHoveredVerseKey,
+  setReadingViewHoveredVerseKey,
+} from '@/redux/slices/QuranReader/readingViewVerse';
 import { openStudyMode } from '@/redux/slices/QuranReader/studyMode';
 import {
   MushafLines,
@@ -125,6 +129,14 @@ const QuranWord = ({
 
   const isTranslationMode = readingPreference === ReadingPreference.Translation;
   const isArabicReadingMode = readingPreference === ReadingPreference.Reading;
+  // FORK: hide-ayah mode — blur the Arabic glyph in Reading mode, reveal on ayah hover
+  const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
+  const hoveredVerseKey = useSelector(selectReadingViewHoveredVerseKey);
+  const shouldBlurGlyph =
+    isHideAyahEnabled &&
+    isArabicReadingMode &&
+    word.charTypeName === CharType.Word &&
+    word.verseKey !== hoveredVerseKey;
   const isRecitationEnabled = wordClickFunctionality === WordClickFunctionality.PlayAudio;
 
   // creating wordLocation instead of using `word.location` because
@@ -362,18 +374,19 @@ const QuranWord = ({
   );
 
   const onMouseEnter = useCallback(() => {
-    if (word.charTypeName === CharType.End) {
+    // FORK: in hide-ayah mode any word hover reveals its ayah (not only the ayah-end marker)
+    if (word.charTypeName === CharType.End || isHideAyahEnabled) {
       dispatch(setReadingViewHoveredVerseKey(word.verseKey));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- dispatch is stable from useDispatch
-  }, [word.charTypeName, word.verseKey]);
+  }, [word.charTypeName, word.verseKey, isHideAyahEnabled]);
 
   const onMouseLeave = useCallback(() => {
-    if (word.charTypeName === CharType.End) {
+    if (word.charTypeName === CharType.End || isHideAyahEnabled) {
       dispatch(setReadingViewHoveredVerseKey(null));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- dispatch is stable from useDispatch
-  }, [word.charTypeName]);
+  }, [word.charTypeName, isHideAyahEnabled]);
 
   const isInteractionDisabled = isStandaloneMode || isWordInteractionDisabled;
   // Allow clicking on words and ayah numbers in both reading and translation mode for study mode modal
@@ -469,7 +482,9 @@ const QuranWord = ({
           return <>{children}</>;
         }}
       >
-        {wordText}
+        <span className={classNames({ [styles.hideAyahBlurred]: shouldBlurGlyph })}>
+          {wordText}
+        </span>
       </Wrapper>
       {isWordByWordAllowed && (
         <>
