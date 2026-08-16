@@ -3,6 +3,7 @@ import React from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import useTranslation from 'next-translate/useTranslation';
 
+import HideAyahToggle from './HideAyahToggle';
 import QuranFontSection from './QuranFontSection';
 import styles from './SettingTabs.module.scss';
 import TranslationSection from './TranslationSection';
@@ -39,6 +40,7 @@ const SettingTabs = ({ activeTab = SettingsTab.Arabic, onTabChange }: SettingTab
         ))}
       </Tabs.List>
       <div className={styles.scrollableArea}>
+        <HideAyahToggle />
         <div className={styles.versePreviewContainer}>
           <VersePreview />
         </div>
