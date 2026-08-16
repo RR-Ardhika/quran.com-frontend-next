@@ -73,3 +73,10 @@ div.popoverTrigger {
   margin-inline-start: 0;
   margin-inline-end: 0;
 }
+
+// FORK: hide-ayah memorization mode — obscure the Arabic glyph, keep it in the DOM.
+// Uses text-shadow instead of filter:blur() — much cheaper with hundreds of words per page.
+.hideAyahBlurred {
+  color: transparent;
+  text-shadow: 0 0 10px var(--color-text-default);
+}

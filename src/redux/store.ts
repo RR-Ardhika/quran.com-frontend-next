@@ -32,6 +32,7 @@ import persistGateHydration from './slices/persistGateHydration';
 import bookmarks from './slices/QuranReader/bookmarks';
 import contextMenu from './slices/QuranReader/contextMenu';
 import fontFaces from './slices/QuranReader/font-faces';
+import hideAyah from './slices/QuranReader/hideAyah';
 import notes from './slices/QuranReader/notes';
 import pinnedVerses from './slices/QuranReader/pinnedVerses';
 import readingPreferences from './slices/QuranReader/readingPreferences';
@@ -70,6 +71,7 @@ const persistConfig = {
     SliceName.DEFAULT_SETTINGS,
     SliceName.SIDEBAR_NAVIGATION,
     SliceName.BANNER,
+    SliceName.HIDE_AYAH,
     SliceName.FUNDRAISING_BANNER,
     SliceName.SESSION,
     SliceName.BOOKMARKS,
@@ -90,6 +92,7 @@ export const rootReducer = combineReducers({
   navbar,
   notes,
   quranReaderStyles,
+  hideAyah,
   readingPreferences,
   translations,
   theme,

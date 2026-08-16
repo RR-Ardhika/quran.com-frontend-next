@@ -1,4 +1,3 @@
-import { isStaticBuild } from '@/utils/build';
 
 const getLocalePostfix = (locale: string) => (locale !== 'en' ? `/${locale}` : '');
 
@@ -67,12 +66,11 @@ export const getBasePath = (): string =>
     process.env.NEXT_PUBLIC_VERCEL_URL
   }`;
 
-export const getProxiedServiceUrl = (service: QuranFoundationService, path: string): string => {
-  const PROXY_PATH = `/api/proxy/${service}`;
-  const BASE_PATH = isStaticBuild
-    ? `${process.env.API_GATEWAY_URL}/${service}`
-    : `${getBasePath()}${PROXY_PATH}`;
-  return `${BASE_PATH}${path}`;
+export const getProxiedServiceUrl = (_service: QuranFoundationService, path: string): string => {
+  // FORK: bypass the signed proxy; base URL is configurable, defaults to the public QDC API.
+  // The public API has no per-service prefix (the gateway routes /content, /auth, ... internally).
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.qurancdn.com';
+  return `${API_BASE_URL}${path}`;
 };
 
 /**
