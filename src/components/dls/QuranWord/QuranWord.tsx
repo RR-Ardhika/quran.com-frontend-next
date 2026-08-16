@@ -22,6 +22,7 @@ import Wrapper from '@/components/Wrapper/Wrapper';
 import MobilePopover from '@/dls/Popover/HoverablePopover';
 import useIsMobile from '@/hooks/useIsMobile';
 import ArrowIcon from '@/icons/arrow.svg';
+import { RootState } from '@/redux/RootState';
 import { selectShowTooltipWhenPlayingAudio } from '@/redux/slices/AudioPlayer/state';
 import { selectIsHideAyahEnabled } from '@/redux/slices/QuranReader/hideAyah';
 import {
@@ -129,14 +130,17 @@ const QuranWord = ({
 
   const isTranslationMode = readingPreference === ReadingPreference.Translation;
   const isArabicReadingMode = readingPreference === ReadingPreference.Reading;
-  // FORK: hide-ayah mode — blur the Arabic glyph in Reading mode, reveal on ayah hover
+  // FORK: hide-ayah mode — blur the Arabic glyph in Reading mode, reveal on ayah hover.
+  // Boolean selector: only the words of the previous/current hovered ayah re-render.
   const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
-  const hoveredVerseKey = useSelector(selectReadingViewHoveredVerseKey);
+  const isAyahRevealed = useSelector(
+    (state: RootState) => word.verseKey === selectReadingViewHoveredVerseKey(state),
+  );
   const shouldBlurGlyph =
     isHideAyahEnabled &&
     isArabicReadingMode &&
     word.charTypeName === CharType.Word &&
-    word.verseKey !== hoveredVerseKey;
+    !isAyahRevealed;
   const isRecitationEnabled = wordClickFunctionality === WordClickFunctionality.PlayAudio;
 
   // creating wordLocation instead of using `word.location` because
