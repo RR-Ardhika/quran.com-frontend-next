@@ -57,7 +57,7 @@ Not affiliated with or endorsed by Quran.com / the Quran Foundation.
 - **Public API bypass** — the signed API proxy is bypassed; all data calls go directly to the public `api.qurancdn.com` API. Base URL is configurable via `NEXT_PUBLIC_API_BASE_URL`.
 - **Hydration fix** — persisted audio-player context (reciter, volume, playback speed) is applied post-mount instead of at machine creation, fixing hydration errors on reload with a non-default reciter.
 - **Default reciter** — Sa'ud ash-Shuraym (id 10) instead of Mishari Rashid al-Afasy.
-- **Tooling** — husky pre-commit hooks removed; lint/format is left to CI.
+- **Tooling** — husky pre-commit hooks removed; GitHub Actions workflows disabled (renamed to `.bak`, re-enable with `git mv`); `FUNDING.yml` kept pointing to the Quran Foundation.
 
 ### How to Contribute
 
