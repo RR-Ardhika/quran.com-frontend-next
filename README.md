@@ -40,6 +40,25 @@
 
 This project is the frontend for Quran.com. It is built on top of [Next.js](https://nextjs.org/docs/getting-started), a popular framework that takes the trouble and setup of setting up an isomorphic react app. We deploy it on now.sh automatically with automatic generation of builds for PRs.
 
+### About This Fork
+
+This is a personal fork of [`quran/quran.com-frontend-next`](https://github.com/quran/quran.com-frontend-next) for personal, non-commercial use.
+
+- **Code**: upstream declares MIT (`package.json` + license badge), though the repo ships no LICENSE file. Modifications in this fork are marked with `// FORK:` comments and are MIT-licensed by the fork author.
+- **Content & data**: Quran text, translations, tafsir, and audio fetched via quran.com APIs are governed by the [quran.com Terms](https://quran.com/terms-and-conditions) — **personal, non-commercial use only**. Do not host a public instance of this fork.
+- **Fonts**: the mushaf fonts under `public/fonts` are from the King Fahd Glorious Quran Printing Complex and carry their own license; they are excluded from this fork. Restore them from upstream for local development.
+
+Not affiliated with or endorsed by Quran.com / the Quran Foundation.
+
+<!-- Add new fork changes to the top of this list as they land. -->
+### Changes in This Fork
+
+- **Hide-ayah memorization mode** — opt-in toggle in the SettingsDrawer blurs Arabic glyph words in Reading (mushaf) view (word-by-word translation stays visible); hovering/tapping a word reveals its whole ayah. Persisted via redux-persist.
+- **Public API bypass** — the signed API proxy is bypassed; all data calls go directly to the public `api.qurancdn.com` API. Base URL is configurable via `NEXT_PUBLIC_API_BASE_URL`.
+- **Hydration fix** — persisted audio-player context (reciter, volume, playback speed) is applied post-mount instead of at machine creation, fixing hydration errors on reload with a non-default reciter.
+- **Default reciter** — Sa'ud ash-Shuraym (id 10) instead of Mishari Rashid al-Afasy.
+- **Tooling** — husky pre-commit hooks removed; lint/format is left to CI.
+
 ### How to Contribute
 
 We trust that you will not copy this idea/project, this is at the end for the sake of Allah and we all have good intentions while working with this project. But we must stress that copying the code/project is unacceptable.
