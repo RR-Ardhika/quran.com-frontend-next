@@ -33,11 +33,12 @@ export interface DefaultSettings {
 // Tafsir Ibn Kathir in English
 export const DEFAULT_TAFSIRS = ['en-tafisr-ibn-kathir'];
 
+// FORK: default reciter changed to Sa'ud ash-Shuraym (id 10, Murattal/Hafs)
 export const DEFAULT_RECITER = {
-  id: 7,
-  name: 'Mishari Rashid al-`Afasy',
-  recitationStyle: 'Warsh',
-  relativePath: 'mishaari_raashid_al_3afaasee',
+  id: 10,
+  name: "Sa'ud ash-Shuraim",
+  recitationStyle: 'Murattal',
+  relativePath: 'saud_ash_shuraym',
 } as Reciter;
 
 const TAFSIRS_INITIAL_STATE: TafsirsSettings = {
