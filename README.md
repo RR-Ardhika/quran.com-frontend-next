@@ -53,6 +53,7 @@ Not affiliated with or endorsed by Quran.com / the Quran Foundation.
 <!-- Add new fork changes to the top of this list as they land. -->
 ### Changes in This Fork
 
+- **Dev server port** — `next dev` runs on port 6236 by default.
 - **Hide-ayah memorization mode** — opt-in toggle in the SettingsDrawer blurs Arabic glyph words in Reading (mushaf) view (word-by-word translation stays visible); hovering/tapping a word reveals its whole ayah. Persisted via redux-persist.
 - **Configurable audio CDN base URL** — audio URLs (word-by-word mp3s and chapter recitations) can be rewritten through a custom base via `NEXT_PUBLIC_AUDIO_BASE_URL` (see `src/utils/audioGateway.ts`); defaults to the official CDNs when unset.
 - **Public API bypass** — the signed API proxy is bypassed; all data calls go directly to the public `api.qurancdn.com` API. Base URL is configurable via `NEXT_PUBLIC_API_BASE_URL`.
