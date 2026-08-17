@@ -1,5 +1,7 @@
 import VerseTiming from 'types/VerseTiming';
 
+import { getProxiedAudioUrl } from '@/utils/audioGateway'; // FORK: configurable audio base URL
+
 export const getVerseTimingByVerseKey = (verseKey: string, verseTimings: VerseTiming[]) => {
   return verseTimings.find((verseTiming) => verseTiming.verseKey === verseKey);
 };
@@ -25,5 +27,5 @@ export const getWordByWordAudioUrl = (chapter: number, verse: number, wordLocati
   const formattedVerse = formatNumber(verse);
   const formattedWordLocation = formatNumber(wordLocation);
 
-  return `${QURANCDN_AUDIO_BASE_URL}wbw/${formattedChapter}_${formattedVerse}_${formattedWordLocation}.mp3`;
+  return getProxiedAudioUrl(`${QURANCDN_AUDIO_BASE_URL}wbw/${formattedChapter}_${formattedVerse}_${formattedWordLocation}.mp3`); // FORK: route through configured audio base URL when set
 };
