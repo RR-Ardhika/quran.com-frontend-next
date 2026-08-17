@@ -54,6 +54,7 @@ Not affiliated with or endorsed by Quran.com / the Quran Foundation.
 ### Changes in This Fork
 
 - **Hide-ayah memorization mode** — opt-in toggle in the SettingsDrawer blurs Arabic glyph words in Reading (mushaf) view (word-by-word translation stays visible); hovering/tapping a word reveals its whole ayah. Persisted via redux-persist.
+- **Configurable audio CDN base URL** — audio URLs (word-by-word mp3s and chapter recitations) can be rewritten through a custom base via `NEXT_PUBLIC_AUDIO_BASE_URL` (see `src/utils/audioGateway.ts`); defaults to the official CDNs when unset.
 - **Public API bypass** — the signed API proxy is bypassed; all data calls go directly to the public `api.qurancdn.com` API. Base URL is configurable via `NEXT_PUBLIC_API_BASE_URL`.
 - **Hydration fix** — persisted audio-player context (reciter, volume, playback speed) is applied post-mount instead of at machine creation, fixing hydration errors on reload with a non-default reciter.
 - **Default reciter** — Sa'ud ash-Shuraym (id 10) instead of Mishari Rashid al-Afasy.

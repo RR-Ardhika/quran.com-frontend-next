@@ -21,6 +21,7 @@ import {
   getMediaSessionMetaData,
   getAyahNumberByTimestamp,
 } from './audioPlayerMachineHelper';
+import { getProxiedAudioUrl } from '@/utils/audioGateway'; // FORK: configurable audio base URL
 import AudioPlayerContext from './types/AudioPlayerContext';
 import AudioPlayerEventType from './types/AudioPlayerEventType';
 
@@ -860,7 +861,7 @@ export const audioPlayerMachine =
           const {
             audioData: { audioUrl },
           } = context;
-          context.audioPlayer.src = audioUrl;
+          context.audioPlayer.src = getProxiedAudioUrl(audioUrl); // FORK: route through configured audio base URL when set
         },
         setAudioPlayerCurrentTime: (context) => {
           const {
