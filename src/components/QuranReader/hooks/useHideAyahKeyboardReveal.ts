@@ -6,7 +6,7 @@
 // The target is resolved once at keydown and pinned while held, so it never
 // chases the reciter. A window blur while Alt is held clears the reveal so it
 // can never get stuck.
-import { useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 
 import { useSelector as useXstateSelector } from '@xstate/react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -54,29 +54,33 @@ const useHideAyahKeyboardReveal = (): void => {
   const audioService = useContext(AudioPlayerMachineContext);
   const isAudioPlayerVisible = useXstateSelector(audioService, selectIsAudioPlayerVisible);
 
+  const revealTarget = useCallback(() => {
+    const snapshot = audioService.getSnapshot();
+    const { surah, ayahNumber } = snapshot.context;
+    if (isAudioPlayerVisible && surah && ayahNumber) {
+      // Playing/paused: pin the current (= last-played) ayah.
+      dispatch(setKeyboardRevealedVerseKey(makeVerseKey(String(surah), ayahNumber)));
+      return;
+    }
+    // Never played: reveal the whole page at the top of the viewport.
+    const topLine = getTopmostVisibleLine();
+    if (topLine?.dataset.page) {
+      dispatch(setKeyboardRevealedPageNumber(Number(topLine.dataset.page)));
+    }
+  }, [dispatch, audioService, isAudioPlayerVisible]);
+
+  const clear = useCallback(() => {
+    dispatch(setKeyboardRevealedVerseKey(null));
+    dispatch(setKeyboardRevealedPageNumber(null));
+  }, [dispatch]);
+
   useEffect(() => {
     if (!isHideAyahEnabled) return undefined;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Alt' || event.repeat || isTypingTarget(document.activeElement)) return;
       event.preventDefault();
-
-      const snapshot = audioService.getSnapshot();
-      const { surah, ayahNumber } = snapshot.context;
-      if (isAudioPlayerVisible && surah && ayahNumber) {
-        // Playing/paused: pin the current (= last-played) ayah.
-        dispatch(setKeyboardRevealedVerseKey(makeVerseKey(String(surah), ayahNumber)));
-        return;
-      }
-      // Never played: reveal the whole page at the top of the viewport.
-      const topLine = getTopmostVisibleLine();
-      if (topLine?.dataset.page) {
-        dispatch(setKeyboardRevealedPageNumber(Number(topLine.dataset.page)));
-      }
-    };
-    const clear = () => {
-      dispatch(setKeyboardRevealedVerseKey(null));
-      dispatch(setKeyboardRevealedPageNumber(null));
+      revealTarget();
     };
     const onKeyUp = (event: KeyboardEvent) => {
       if (event.key === 'Alt') clear();
@@ -91,7 +95,7 @@ const useHideAyahKeyboardReveal = (): void => {
       window.removeEventListener('blur', clear);
       clear();
     };
-  }, [dispatch, isHideAyahEnabled, isAudioPlayerVisible, audioService]);
+  }, [isHideAyahEnabled, revealTarget, clear]);
 };
 
 export default useHideAyahKeyboardReveal;
