@@ -53,6 +53,8 @@ Not affiliated with or endorsed by Quran.com / the Quran Foundation.
 <!-- Add new fork changes to the top of this list as they land. -->
 ### Changes in This Fork
 
+- **Hide-ayah: hold-Alt keyboard peek** — holding Alt in Reading view reveals one ayah without the mouse: the currently-reciting ayah while playing, the last-played ayah when paused, or the topmost visible ayah when nothing has played; releasing re-hides (see `src/components/QuranReader/hooks/useHideAyahKeyboardReveal.ts`).
+- **Hide-ayah: line-level hover reveal** — the reveal region is the whole mushaf line (`ReadingView/Line.tsx` delegated hover), so the pointer resting in gaps between words no longer re-blurs the ayah.
 - **Dev server port** — `next dev` runs on port 6236 by default.
 - **Hide-ayah memorization mode** — opt-in toggle in the SettingsDrawer blurs Arabic glyph words in Reading (mushaf) view (word-by-word translation stays visible); hovering/tapping a word reveals its whole ayah. Persisted via redux-persist.
 - **Configurable audio CDN base URL** — audio URLs (word-by-word mp3s and chapter recitations) can be rewritten through a custom base via `NEXT_PUBLIC_AUDIO_BASE_URL` (see `src/utils/audioGateway.ts`); defaults to the official CDNs when unset.

@@ -6,11 +6,14 @@ import SliceName from '@/redux/types/SliceName';
 export type ReadingViewVerseState = {
   hoveredVerseKey: string | null;
   selectedVerseKey: string | null;
+  // FORK: hide-ayah — ayah currently revealed by holding Alt (transient, never persisted)
+  keyboardRevealedVerseKey: string | null;
 };
 
 export const initialState: ReadingViewVerseState = {
   hoveredVerseKey: null,
   selectedVerseKey: null,
+  keyboardRevealedVerseKey: null,
 };
 
 /**
@@ -33,10 +36,18 @@ const readingViewVerse = createSlice({
         selectedVerseKey: payload,
       };
     },
+    // FORK: hide-ayah — pin/clear the Alt-keyboard-revealed ayah
+    setKeyboardRevealedVerseKey: (state, { payload }: PayloadAction<string | null>) => {
+      return {
+        ...state,
+        keyboardRevealedVerseKey: payload,
+      };
+    },
     clearAllHighlights: () => {
       return {
         hoveredVerseKey: null,
         selectedVerseKey: null,
+        keyboardRevealedVerseKey: null,
       };
     },
   },
@@ -48,6 +59,14 @@ export const selectReadingViewHoveredVerseKey = (state: RootState) =>
 export const selectReadingViewSelectedVerseKey = (state: RootState) =>
   state.readingViewVerse.selectedVerseKey;
 
-export const { setReadingViewHoveredVerseKey, setReadingViewSelectedVerseKey, clearAllHighlights } =
-  readingViewVerse.actions;
+// FORK: hide-ayah
+export const selectKeyboardRevealedVerseKey = (state: RootState) =>
+  state.readingViewVerse.keyboardRevealedVerseKey;
+
+export const {
+  setReadingViewHoveredVerseKey,
+  setReadingViewSelectedVerseKey,
+  clearAllHighlights,
+  setKeyboardRevealedVerseKey, // FORK: hide-ayah
+} = readingViewVerse.actions;
 export default readingViewVerse.reducer;

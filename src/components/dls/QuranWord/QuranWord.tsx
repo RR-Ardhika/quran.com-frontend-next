@@ -33,6 +33,7 @@ import {
 } from '@/redux/slices/QuranReader/readingPreferences';
 import {
   selectReadingViewHoveredVerseKey,
+  selectKeyboardRevealedVerseKey, // FORK: hide-ayah
   setReadingViewHoveredVerseKey,
 } from '@/redux/slices/QuranReader/readingViewVerse';
 import { openStudyMode } from '@/redux/slices/QuranReader/studyMode';
@@ -130,11 +131,14 @@ const QuranWord = ({
 
   const isTranslationMode = readingPreference === ReadingPreference.Translation;
   const isArabicReadingMode = readingPreference === ReadingPreference.Reading;
-  // FORK: hide-ayah mode — blur the Arabic glyph in Reading mode, reveal on ayah hover.
-  // Boolean selector: only the words of the previous/current hovered ayah re-render.
+  // FORK: hide-ayah mode — blur the Arabic glyph in Reading mode; revealed when the
+  // ayah is hovered (line-level) or pinned by holding Alt (keyboard reveal).
+  // Boolean selector: only the words of the previous/current revealed ayah re-render.
   const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
   const isAyahRevealed = useSelector(
-    (state: RootState) => word.verseKey === selectReadingViewHoveredVerseKey(state),
+    (state: RootState) =>
+      word.verseKey === selectReadingViewHoveredVerseKey(state) ||
+      word.verseKey === selectKeyboardRevealedVerseKey(state),
   );
   const shouldBlurGlyph =
     isHideAyahEnabled &&
@@ -378,19 +382,18 @@ const QuranWord = ({
   );
 
   const onMouseEnter = useCallback(() => {
-    // FORK: in hide-ayah mode any word hover reveals its ayah (not only the ayah-end marker)
-    if (word.charTypeName === CharType.End || isHideAyahEnabled) {
+    if (word.charTypeName === CharType.End) {
       dispatch(setReadingViewHoveredVerseKey(word.verseKey));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- dispatch is stable from useDispatch
-  }, [word.charTypeName, word.verseKey, isHideAyahEnabled]);
+  }, [word.charTypeName, word.verseKey]);
 
   const onMouseLeave = useCallback(() => {
-    if (word.charTypeName === CharType.End || isHideAyahEnabled) {
+    if (word.charTypeName === CharType.End) {
       dispatch(setReadingViewHoveredVerseKey(null));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- dispatch is stable from useDispatch
-  }, [word.charTypeName, isHideAyahEnabled]);
+  }, [word.charTypeName]);
 
   const isInteractionDisabled = isStandaloneMode || isWordInteractionDisabled;
   // Allow clicking on words and ayah numbers in both reading and translation mode for study mode modal
