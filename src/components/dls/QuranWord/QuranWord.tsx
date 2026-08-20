@@ -32,8 +32,9 @@ import {
   selectWordClickFunctionality,
 } from '@/redux/slices/QuranReader/readingPreferences';
 import {
-  selectReadingViewHoveredVerseKey,
+  selectHideAyahHoveredLineKey, // FORK: hide-ayah
   selectKeyboardRevealedVerseKey, // FORK: hide-ayah
+  selectKeyboardRevealedPageNumber, // FORK: hide-ayah
   setReadingViewHoveredVerseKey,
 } from '@/redux/slices/QuranReader/readingViewVerse';
 import { openStudyMode } from '@/redux/slices/QuranReader/studyMode';
@@ -131,20 +132,18 @@ const QuranWord = ({
 
   const isTranslationMode = readingPreference === ReadingPreference.Translation;
   const isArabicReadingMode = readingPreference === ReadingPreference.Reading;
-  // FORK: hide-ayah mode — blur the Arabic glyph in Reading mode; revealed when the
-  // ayah is hovered (line-level) or pinned by holding Alt (keyboard reveal).
-  // Boolean selector: only the words of the previous/current revealed ayah re-render.
+  // FORK: hide-ayah mode — blur the Arabic glyph in Reading mode; revealed when its line
+  // is hovered, or when pinned by holding Alt (ayah while playing/paused, page otherwise).
+  // Boolean selector: only the words of the previous/current revealed target re-render.
   const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
-  const isAyahRevealed = useSelector(
+  const isRevealed = useSelector(
     (state: RootState) =>
-      word.verseKey === selectReadingViewHoveredVerseKey(state) ||
-      word.verseKey === selectKeyboardRevealedVerseKey(state),
+      `Page${word.pageNumber}-Line${word.lineNumber}` === selectHideAyahHoveredLineKey(state) ||
+      word.verseKey === selectKeyboardRevealedVerseKey(state) ||
+      word.pageNumber === selectKeyboardRevealedPageNumber(state),
   );
   const shouldBlurGlyph =
-    isHideAyahEnabled &&
-    isArabicReadingMode &&
-    word.charTypeName === CharType.Word &&
-    !isAyahRevealed;
+    isHideAyahEnabled && isArabicReadingMode && word.charTypeName === CharType.Word && !isRevealed;
   const isRecitationEnabled = wordClickFunctionality === WordClickFunctionality.PlayAudio;
 
   // creating wordLocation instead of using `word.location` because

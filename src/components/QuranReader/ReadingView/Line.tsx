@@ -13,7 +13,6 @@ import styles from './Line.module.scss';
 import ChapterHeader from '@/components/chapters/ChapterHeader';
 import { useOnboarding } from '@/components/Onboarding/OnboardingProvider';
 import VerseText from '@/components/Verse/VerseText';
-import { DATA_ATTRIBUTE_WORD_LOCATION } from '@/dls/QuranWord/QuranWord';
 import useNavbarAutoHide from '@/hooks/useNavbarAutoHide';
 import useIntersectionObserver from '@/hooks/useObserveElement';
 import useScroll, { SMOOTH_SCROLL_TO_CENTER } from '@/hooks/useScrollToElement';
@@ -23,8 +22,8 @@ import { selectEnableAutoScrolling } from '@/redux/slices/AudioPlayer/state';
 import { selectIsHideAyahEnabled } from '@/redux/slices/QuranReader/hideAyah';
 import { selectInlineDisplayWordByWordPreferences } from '@/redux/slices/QuranReader/readingPreferences';
 import {
-  selectReadingViewHoveredVerseKey,
-  setReadingViewHoveredVerseKey,
+  selectHideAyahHoveredLineKey,
+  setHideAyahHoveredLineKey,
 } from '@/redux/slices/QuranReader/readingViewVerse';
 import { selectStudyModeIsOpen } from '@/redux/slices/QuranReader/studyMode';
 import QuranReaderStyles from '@/redux/types/QuranReaderStyles';
@@ -106,29 +105,20 @@ const Line = ({
   const { verseKey, pageNumber, hizbNumber } = firstWord;
   const chapterId = firstWordData[0];
 
-  // FORK: hide-ayah — delegated hover. mouseover bubbles up from any word (or its wbw
-  // text); the pointer sitting in gaps between words fires nothing, so the revealed ayah
-  // stays revealed anywhere inside the line. Only leaving the whole line clears it.
-  // store.getState() avoids re-rendering every Line on each hover change.
+  // FORK: hide-ayah — line-level delegated hover: hovering anywhere inside the line
+  // (including gaps between words) reveals that line's blurred words; only leaving
+  // the whole line clears it. store.getState() avoids re-rendering Lines on hover.
   const dispatch = useDispatch();
   const store = useStore<RootState>();
   const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
-  const onLineMouseOver = useCallback(
-    (event: React.MouseEvent) => {
-      if (!isHideAyahEnabled) return;
-      const wordElement = (event.target as Element).closest?.(`[${DATA_ATTRIBUTE_WORD_LOCATION}]`);
-      if (!wordElement) return;
-      const wordLocation = wordElement.getAttribute(DATA_ATTRIBUTE_WORD_LOCATION);
-      const [chapter, verse] = getWordDataByLocation(wordLocation);
-      const hoveredVerseKey = `${chapter}:${verse}`;
-      if (selectReadingViewHoveredVerseKey(store.getState()) !== hoveredVerseKey) {
-        dispatch(setReadingViewHoveredVerseKey(hoveredVerseKey));
-      }
-    },
-    [dispatch, store, isHideAyahEnabled],
-  );
+  const onLineMouseOver = useCallback(() => {
+    if (!isHideAyahEnabled) return;
+    if (selectHideAyahHoveredLineKey(store.getState()) !== lineKey) {
+      dispatch(setHideAyahHoveredLineKey(lineKey));
+    }
+  }, [dispatch, store, isHideAyahEnabled, lineKey]);
   const onLineMouseLeave = useCallback(() => {
-    if (isHideAyahEnabled) dispatch(setReadingViewHoveredVerseKey(null));
+    if (isHideAyahEnabled) dispatch(setHideAyahHoveredLineKey(null));
   }, [dispatch, isHideAyahEnabled]);
 
   return (

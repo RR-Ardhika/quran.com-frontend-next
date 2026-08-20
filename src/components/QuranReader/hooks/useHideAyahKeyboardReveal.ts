@@ -1,9 +1,8 @@
 // FORK: hide-ayah — hold-to-peek keyboard reveal.
 //
-// Holding Alt reveals exactly one ayah (release re-hides it), mirroring mouse
-// hover for keyboard-only reading:
+// Holding Alt reveals content without the mouse (release re-hides):
 //   - recitation playing/paused → the audio player's current (= last-played) ayah
-//   - recitation never started   → the topmost visible ayah in the viewport
+//   - recitation never started   → the whole mushaf page at the top of the viewport
 // The target is resolved once at keydown and pinned while held, so it never
 // chases the reciter. A window blur while Alt is held clears the reveal so it
 // can never get stuck.
@@ -13,7 +12,10 @@ import { useSelector as useXstateSelector } from '@xstate/react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectIsHideAyahEnabled } from '@/redux/slices/QuranReader/hideAyah';
-import { setKeyboardRevealedVerseKey } from '@/redux/slices/QuranReader/readingViewVerse';
+import {
+  setKeyboardRevealedPageNumber,
+  setKeyboardRevealedVerseKey,
+} from '@/redux/slices/QuranReader/readingViewVerse';
 import { makeVerseKey } from '@/utils/verse';
 import { selectIsAudioPlayerVisible } from 'src/xstate/actors/audioPlayer/selectors';
 import { AudioPlayerMachineContext } from 'src/xstate/AudioPlayerMachineContext';
@@ -28,17 +30,16 @@ const isTypingTarget = (el: Element | null): boolean => {
 };
 
 /**
- * Find the topmost Reading-view line intersecting the viewport (below the
- * navbar) and return the verse key of its first word.
+ * Find the topmost Reading-view line intersecting the viewport (below the navbar).
  *
- * @returns {string | null} verse key, or null when no line is in view
+ * @returns {HTMLElement | null} the line element, or null when no line is in view
  */
-const getTopmostVisibleVerseKey = (): string | null => {
+const getTopmostVisibleLine = (): HTMLElement | null => {
   const lines = document.querySelectorAll<HTMLElement>('[data-verse-key]');
   for (let i = 0; i < lines.length; i += 1) {
     const rect = lines[i].getBoundingClientRect();
     if (rect.bottom > NAVBAR_OFFSET_PX && rect.top < window.innerHeight) {
-      return lines[i].dataset.verseKey;
+      return lines[i];
     }
   }
   return null;
@@ -56,20 +57,27 @@ const useHideAyahKeyboardReveal = (): void => {
   useEffect(() => {
     if (!isHideAyahEnabled) return undefined;
 
-    const resolveTargetVerseKey = (): string | null => {
-      if (isAudioPlayerVisible) {
-        const { surah, ayahNumber } = audioService.getSnapshot().context;
-        if (surah && ayahNumber) return makeVerseKey(String(surah), ayahNumber);
-      }
-      return getTopmostVisibleVerseKey();
-    };
-
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Alt' || event.repeat || isTypingTarget(document.activeElement)) return;
       event.preventDefault();
-      dispatch(setKeyboardRevealedVerseKey(resolveTargetVerseKey()));
+
+      const snapshot = audioService.getSnapshot();
+      const { surah, ayahNumber } = snapshot.context;
+      if (isAudioPlayerVisible && surah && ayahNumber) {
+        // Playing/paused: pin the current (= last-played) ayah.
+        dispatch(setKeyboardRevealedVerseKey(makeVerseKey(String(surah), ayahNumber)));
+        return;
+      }
+      // Never played: reveal the whole page at the top of the viewport.
+      const topLine = getTopmostVisibleLine();
+      if (topLine?.dataset.page) {
+        dispatch(setKeyboardRevealedPageNumber(Number(topLine.dataset.page)));
+      }
     };
-    const clear = () => dispatch(setKeyboardRevealedVerseKey(null));
+    const clear = () => {
+      dispatch(setKeyboardRevealedVerseKey(null));
+      dispatch(setKeyboardRevealedPageNumber(null));
+    };
     const onKeyUp = (event: KeyboardEvent) => {
       if (event.key === 'Alt') clear();
     };

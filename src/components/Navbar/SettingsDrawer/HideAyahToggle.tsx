@@ -23,7 +23,9 @@ const HideAyahToggle: React.FC = () => {
       />
       {/* FORK: hide-ayah — keybind discoverability hint */}
       {/* eslint-disable-next-line i18next/no-literal-string -- FORK: personal fork, English-only */}
-      <p className={styles.hint}>Hold Alt to peek at the current ayah</p>
+      <p className={styles.hint}>
+        Hold Alt to peek — current ayah while reciting, current page otherwise
+      </p>
     </div>
   );
 };
