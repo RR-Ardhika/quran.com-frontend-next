@@ -2,3 +2,10 @@
   padding-block: var(--spacing-small);
   padding-inline: var(--spacing-medium);
 }
+
+/* FORK: hide-ayah — keybind hint under the toggle */
+.hint {
+  margin-block-start: var(--spacing-xxsmall);
+  font-size: var(--font-size-xsmall);
+  color: var(--color-text-faded);
+}

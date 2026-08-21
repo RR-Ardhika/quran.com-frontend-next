@@ -1,8 +1,9 @@
+/* eslint-disable max-lines */ // FORK: hide-ayah — delegation handlers pushed the file past the upstream cap
 import { memo, RefObject, useCallback, useContext, useRef } from 'react';
 
 import { useSelector as useXstateSelector } from '@xstate/react';
 import classNames from 'classnames';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useSelector, useDispatch, useStore } from 'react-redux';
 
 import { QURAN_READER_OBSERVER_ID } from '../observer';
 import { verseFontChanged } from '../utils/memoization';
@@ -15,8 +16,15 @@ import VerseText from '@/components/Verse/VerseText';
 import useNavbarAutoHide from '@/hooks/useNavbarAutoHide';
 import useIntersectionObserver from '@/hooks/useObserveElement';
 import useScroll, { SMOOTH_SCROLL_TO_CENTER } from '@/hooks/useScrollToElement';
+import { RootState } from '@/redux/RootState';
 import { selectEnableAutoScrolling } from '@/redux/slices/AudioPlayer/state';
+// FORK: hide-ayah — line-level delegated hover
+import { selectIsHideAyahEnabled } from '@/redux/slices/QuranReader/hideAyah';
 import { selectInlineDisplayWordByWordPreferences } from '@/redux/slices/QuranReader/readingPreferences';
+import {
+  selectHideAyahHoveredLineKey,
+  setHideAyahHoveredLineKey,
+} from '@/redux/slices/QuranReader/readingViewVerse';
 import { selectStudyModeIsOpen } from '@/redux/slices/QuranReader/studyMode';
 import QuranReaderStyles from '@/redux/types/QuranReaderStyles';
 import { getWordDataByLocation } from '@/utils/verse';
@@ -97,6 +105,22 @@ const Line = ({
   const { verseKey, pageNumber, hizbNumber } = firstWord;
   const chapterId = firstWordData[0];
 
+  // FORK: hide-ayah — line-level delegated hover: hovering anywhere inside the line
+  // (including gaps between words) reveals that line's blurred words; only leaving
+  // the whole line clears it. store.getState() avoids re-rendering Lines on hover.
+  const dispatch = useDispatch();
+  const store = useStore<RootState>();
+  const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
+  const onLineMouseOver = useCallback(() => {
+    if (!isHideAyahEnabled) return;
+    if (selectHideAyahHoveredLineKey(store.getState()) !== lineKey) {
+      dispatch(setHideAyahHoveredLineKey(lineKey));
+    }
+  }, [dispatch, store, isHideAyahEnabled, lineKey]);
+  const onLineMouseLeave = useCallback(() => {
+    if (isHideAyahEnabled) dispatch(setHideAyahHoveredLineKey(null));
+  }, [dispatch, isHideAyahEnabled]);
+
   return (
     <div
       ref={mergedRef}
@@ -114,6 +138,9 @@ const Line = ({
         <ChapterHeader chapterId={firstWordData[0]} isTranslationView={false} />
       )}
       <div
+        // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events -- FORK: hide-ayah hover reveal; keyboard equivalent is the Alt-hold peek
+        onMouseOver={onLineMouseOver} // FORK: hide-ayah
+        onMouseLeave={onLineMouseLeave} // FORK: hide-ayah
         className={classNames(styles.line, {
           [styles.mobileInline]: isBigTextLayout,
           [styles.fixedWidth]: !isWordByWordLayout,

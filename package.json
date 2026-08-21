@@ -7,7 +7,7 @@
     "node": "18.x"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 6236",
     "dev:https": "node server.js",
     "prod": "node server-http.js",
     "build": "IS_BUILD_TIME=true next build",

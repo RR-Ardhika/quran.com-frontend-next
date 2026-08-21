@@ -6,11 +6,20 @@ import SliceName from '@/redux/types/SliceName';
 export type ReadingViewVerseState = {
   hoveredVerseKey: string | null;
   selectedVerseKey: string | null;
+  // FORK: hide-ayah — line currently revealed by mouse hover ("Page{page}-Line{line}" key)
+  hideAyahHoveredLineKey: string | null;
+  // FORK: hide-ayah — ayah revealed by holding Alt while playing/paused (transient)
+  keyboardRevealedVerseKey: string | null;
+  // FORK: hide-ayah — mushaf page revealed by holding Alt when nothing has played (transient)
+  keyboardRevealedPageNumber: number | null;
 };
 
 export const initialState: ReadingViewVerseState = {
   hoveredVerseKey: null,
   selectedVerseKey: null,
+  hideAyahHoveredLineKey: null,
+  keyboardRevealedVerseKey: null,
+  keyboardRevealedPageNumber: null,
 };
 
 /**
@@ -33,10 +42,32 @@ const readingViewVerse = createSlice({
         selectedVerseKey: payload,
       };
     },
+    // FORK: hide-ayah — set/clear the hover-revealed line
+    setHideAyahHoveredLineKey: (state, { payload }: PayloadAction<string | null>) => {
+      return {
+        ...state,
+        hideAyahHoveredLineKey: payload,
+      };
+    },
+    // FORK: hide-ayah — pin/clear the Alt-revealed ayah (playing/paused states)
+    setKeyboardRevealedVerseKey: (state, { payload }: PayloadAction<string | null>) => {
+      return {
+        ...state,
+        keyboardRevealedVerseKey: payload,
+        keyboardRevealedPageNumber: null,
+      };
+    },
+    // FORK: hide-ayah — pin/clear the Alt-revealed page (never-played state)
+    setKeyboardRevealedPageNumber: (state, { payload }: PayloadAction<number | null>) => {
+      return {
+        ...state,
+        keyboardRevealedPageNumber: payload,
+        keyboardRevealedVerseKey: null,
+      };
+    },
     clearAllHighlights: () => {
       return {
-        hoveredVerseKey: null,
-        selectedVerseKey: null,
+        ...initialState,
       };
     },
   },
@@ -48,6 +79,24 @@ export const selectReadingViewHoveredVerseKey = (state: RootState) =>
 export const selectReadingViewSelectedVerseKey = (state: RootState) =>
   state.readingViewVerse.selectedVerseKey;
 
-export const { setReadingViewHoveredVerseKey, setReadingViewSelectedVerseKey, clearAllHighlights } =
-  readingViewVerse.actions;
+// FORK: hide-ayah
+export const selectHideAyahHoveredLineKey = (state: RootState) =>
+  state.readingViewVerse.hideAyahHoveredLineKey;
+
+// FORK: hide-ayah
+export const selectKeyboardRevealedVerseKey = (state: RootState) =>
+  state.readingViewVerse.keyboardRevealedVerseKey;
+
+// FORK: hide-ayah
+export const selectKeyboardRevealedPageNumber = (state: RootState) =>
+  state.readingViewVerse.keyboardRevealedPageNumber;
+
+export const {
+  setReadingViewHoveredVerseKey,
+  setReadingViewSelectedVerseKey,
+  clearAllHighlights,
+  setHideAyahHoveredLineKey, // FORK: hide-ayah
+  setKeyboardRevealedVerseKey, // FORK: hide-ayah
+  setKeyboardRevealedPageNumber, // FORK: hide-ayah
+} = readingViewVerse.actions;
 export default readingViewVerse.reducer;
