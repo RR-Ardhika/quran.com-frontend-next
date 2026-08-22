@@ -1,3 +1,4 @@
+import { resolveGatewayBase } from './gatewayResolver';
 
 const getLocalePostfix = (locale: string) => (locale !== 'en' ? `/${locale}` : '');
 
@@ -69,7 +70,11 @@ export const getBasePath = (): string =>
 export const getProxiedServiceUrl = (_service: QuranFoundationService, path: string): string => {
   // FORK: bypass the signed proxy; base URL is configurable, defaults to the public QDC API.
   // The public API has no per-service prefix (the gateway routes /content, /auth, ... internally).
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.qurancdn.com';
+  // Supports a comma-separated candidate list; the first reachable one wins (see gatewayResolver).
+  const API_BASE_URL = resolveGatewayBase(
+    process.env.NEXT_PUBLIC_API_BASE_URL,
+    'https://api.qurancdn.com',
+  );
   return `${API_BASE_URL}${path}`;
 };
 

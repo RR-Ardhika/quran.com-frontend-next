@@ -53,6 +53,7 @@ Not affiliated with or endorsed by Quran.com / the Quran Foundation.
 <!-- Add new fork changes to the top of this list as they land. -->
 ### Changes in This Fork
 
+- **Gateway URL fallback list** — `NEXT_PUBLIC_API_BASE_URL` / `NEXT_PUBLIC_AUDIO_BASE_URL` accept a comma-separated list of candidate gateways; the first reachable one (probed via `<base>/healthz`) wins and is cached in `localStorage`, so the same build works on the dev machine (`localhost`) and LAN devices (tablet/phone). See `src/utils/gatewayResolver.ts`.
 - **Hide-ayah: peek keybinds widened** — hold-to-peek now works with Alt, Ctrl, Shift, or the Windows/Command (Meta) key, not just Alt (`src/components/QuranReader/hooks/useHideAyahKeyboardReveal.ts`).
 - **Hide-ayah memorization mode** — opt-in toggle in the SettingsDrawer blurs Arabic glyph words in Reading (mushaf) view (word-by-word translation stays visible); hovering/tapping a word reveals its whole ayah. Persisted via redux-persist.
 - **Hide-ayah: hold-Alt keyboard peek** — holding Alt in Reading view reveals content without the mouse: the currently-reciting ayah while playing, the last-played ayah when paused, or the whole current page when nothing has played; releasing re-hides (see `src/components/QuranReader/hooks/useHideAyahKeyboardReveal.ts`).
