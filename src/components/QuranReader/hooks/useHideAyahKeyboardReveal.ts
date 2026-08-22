@@ -81,8 +81,9 @@ const useHideAyahKeyboardReveal = (): void => {
     if (!isHideAyahEnabled) return undefined;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (!REVEAL_KEYS.has(event.key) || event.repeat || isTypingTarget(document.activeElement))
+      if (!REVEAL_KEYS.has(event.key) || event.repeat || isTypingTarget(document.activeElement)) {
         return;
+      }
       event.preventDefault();
       revealTarget();
     };

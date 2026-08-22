@@ -46,7 +46,8 @@ const TAFSIRS_INITIAL_STATE: TafsirsSettings = {
   isUsingDefaultTafsirs: true,
 };
 
-export const DEFAULT_TRANSLATIONS = [131]; // Dr. Mustafa Khattab, the Clear Quran
+// FORK: QUR-005 — default translation changed to King Fahad Quran Complex (Indonesian, id 134)
+export const DEFAULT_TRANSLATIONS = [134];
 
 const TRANSLATIONS_INITIAL_STATE: TranslationsSettings = {
   selectedTranslations: DEFAULT_TRANSLATIONS,
@@ -57,9 +58,9 @@ const QURAN_READER_STYLES_INITIAL_STATE: QuranReaderStyles = {
   tafsirFontScale: 3,
   reflectionFontScale: 3,
   lessonFontScale: 3,
-  quranTextFontScale: 3,
-  translationFontScale: 3,
-  wordByWordFontScale: 3,
+  quranTextFontScale: 5, // FORK: QUR-005 — larger default Arabic font (was 3)
+  translationFontScale: 1, // FORK: QUR-005 — smaller default translation font (was 3)
+  wordByWordFontScale: 5, // FORK: QUR-005 — larger default wbw font (was 3)
   qnaFontScale: 3,
   surahInfoFontScale: 3,
   hadithFontScale: 3,
@@ -70,17 +71,18 @@ const QURAN_READER_STYLES_INITIAL_STATE: QuranReaderStyles = {
   showTajweedRules: true,
 };
 
-const DEFAULT_WBW_LOCALE = 'en';
+const DEFAULT_WBW_LOCALE = 'id'; // FORK: QUR-005 — Indonesian wbw (was 'en')
 
 const READING_PREFERENCES_INITIAL_STATE: ReadingPreferences = {
   readingPreference: ReadingPreference.Translation,
   selectedWordByWordLocale: DEFAULT_WBW_LOCALE,
   isUsingDefaultWordByWordLocale: true,
   wordByWordContentType: [WordByWordType.Translation],
-  wordByWordTooltipContentType: [WordByWordType.Translation],
-  wordByWordInlineContentType: [],
-  wordByWordDisplay: [WordByWordDisplay.TOOLTIP],
-  wordClickFunctionality: WordClickFunctionality.PlayAudio,
+  // FORK: QUR-005 — hover tooltip off, inline below-word translation on, click does nothing
+  wordByWordTooltipContentType: [],
+  wordByWordInlineContentType: [WordByWordType.Translation],
+  wordByWordDisplay: [WordByWordDisplay.INLINE],
+  wordClickFunctionality: WordClickFunctionality.NoAudio,
   selectedReadingTranslation: String(DEFAULT_TRANSLATIONS[0]),
   lastUsedReadingMode: ReadingPreference.Reading,
   selectedReflectionLanguages: [Language.EN],

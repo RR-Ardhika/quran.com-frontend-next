@@ -4,7 +4,11 @@ import { resolveGatewayBase } from './gatewayResolver';
 // NEXT_PUBLIC_AUDIO_BASE_URL is set. Defaults to the untouched upstream URL
 // when unset, so stock behavior is preserved. Pattern: <base>/audio/<host>/<path>.
 
-const AUDIO_CDN_HOSTS = ['audio.qurancdn.com', 'verses.quran.foundation', 'download.quranicaudio.com'];
+const AUDIO_CDN_HOSTS = [
+  'audio.qurancdn.com',
+  'verses.quran.foundation',
+  'download.quranicaudio.com',
+];
 
 /**
  * @param {string} url absolute audio URL on a known CDN host

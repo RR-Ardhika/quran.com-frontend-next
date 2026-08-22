@@ -67,6 +67,7 @@ export const getBasePath = (): string =>
     process.env.NEXT_PUBLIC_VERCEL_URL
   }`;
 
+// eslint-disable-next-line @typescript-eslint/naming-convention -- FORK: signature kept for API compatibility
 export const getProxiedServiceUrl = (_service: QuranFoundationService, path: string): string => {
   // FORK: bypass the signed proxy; base URL is configurable, defaults to the public QDC API.
   // The public API has no per-service prefix (the gateway routes /content, /auth, ... internally).

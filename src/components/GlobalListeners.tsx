@@ -4,14 +4,13 @@ import DisableAnimationsUntilHydration from './DisableAnimationsUntilHydration';
 import GlobalPersistGateHydrationListener from './GlobalPersistGateHydrationListener';
 
 import GlobalKeyboardListeners from '@/components/GlobalKeyboardListeners';
-import GlobalScrollListener from '@/components/GlobalScrollListener';
+// FORK: GlobalScrollListener removed (QUR-005) — the merged header is always visible.
 import GuestBookmarksMigrationModal from '@/components/GuestBookmarksMigrationModal';
 
 const GlobalListeners = () => {
   return (
     <>
       <GlobalKeyboardListeners />
-      <GlobalScrollListener />
       <GlobalPersistGateHydrationListener />
       <DisableAnimationsUntilHydration />
       <GuestBookmarksMigrationModal />

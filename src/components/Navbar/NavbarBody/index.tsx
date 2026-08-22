@@ -9,9 +9,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './NavbarBody.module.scss';
 import ProfileAvatarButton from './ProfileAvatarButton';
+import { ReaderHeaderMiddle, ReaderHeaderSubRows } from './ReaderHeaderSection';
 
-import Banner, { BannerVariant } from '@/components/Banner/Banner';
 import NavbarLogoWrapper from '@/components/Navbar/Logo/NavbarLogoWrapper';
+// FORK: QUR-005 — reader header pieces absorbed from the old ContextMenu.
+import SettingsButton from '@/components/QuranReader/ContextMenu/components/SettingsButton';
 import Button, { ButtonShape, ButtonVariant } from '@/dls/Button/Button';
 import Spinner from '@/dls/Spinner/Spinner';
 import useIsLoggedIn from '@/hooks/auth/useIsLoggedIn';
@@ -41,11 +43,12 @@ const SidebarNavigation = dynamic(
   },
 );
 
-interface Props {
-  isBannerVisible: boolean;
-}
-
-const NavbarBody: React.FC<Props> = ({ isBannerVisible }) => {
+// FORK: QUR-005 — NavbarBody is now the single merged, always-visible header.
+// On reader routes it hosts the old ContextMenu items in the agreed order:
+// logo | sidebar toggle + chapter nav | page info | reading-mode toggle |
+// settings | profile | language | search | sidebar nav | hamburger,
+// with the progress bar (desktop) and mobile reading tabs on their own rows.
+const NavbarBody: React.FC = () => {
   const { t } = useTranslation('common');
   const dispatch = useDispatch();
   const isNavigationDrawerOpen = useSelector(selectIsNavigationDrawerOpen);
@@ -120,34 +123,8 @@ const NavbarBody: React.FC<Props> = ({ isBannerVisible }) => {
 
   const { openSearchDrawer, openNavigationDrawer, openLanguageDrawer } = useNavbarDrawerActions();
 
-  const bannerCopy = {
-    mobileLineOne: t('fundraising-sticky-banner-v2.mobile-line-one'),
-    mobileLineTwo: t('fundraising-sticky-banner-v2.mobile-line-two'),
-  };
-
-  const standaloneDesktopText = `${bannerCopy.mobileLineOne} ${bannerCopy.mobileLineTwo}`;
-
-  const standaloneBannerProps = {
-    copy: {
-      desktop: standaloneDesktopText,
-      mobileLineOne: bannerCopy.mobileLineOne,
-      mobileLineTwo: bannerCopy.mobileLineTwo,
-    },
-    text: standaloneDesktopText,
-    ctaButtonText: t('fundraising-sticky-banner-v2.cta'),
-  };
-
   return (
     <>
-      {isBannerVisible && (
-        <div
-          className={classNames(styles.bannerContainerTop, {
-            [styles.dimmed]: isNavigationDrawerOpen || isSettingsDrawerOpen || isLanguageDrawerOpen,
-          })}
-        >
-          <Banner {...standaloneBannerProps} variant={BannerVariant.Standalone} />
-        </div>
-      )}
       <div
         className={classNames(styles.itemsContainer, {
           [styles.dimmed]: isNavigationDrawerOpen || isSettingsDrawerOpen || isLanguageDrawerOpen,
@@ -159,8 +136,12 @@ const NavbarBody: React.FC<Props> = ({ isBannerVisible }) => {
             <NavbarLogoWrapper />
           </div>
         </div>
+        {/* FORK: QUR-005 — merged reader items (chapter nav, page info, mode toggle) */}
+        {isQuranReaderRoute && <ReaderHeaderMiddle />}
         <div className={styles.centerVertically}>
           <div className={styles.rightCTA}>
+            {/* FORK: QUR-005 — settings button joins the right cluster on reader pages */}
+            {isQuranReaderRoute && <SettingsButton />}
             {!isLoggedIn && <ProfileAvatarButton />}
             <Button
               tooltip={t('languages')}
@@ -186,6 +167,7 @@ const NavbarBody: React.FC<Props> = ({ isBannerVisible }) => {
             </Button>
 
             {shouldRenderSidebarNavigation && <SidebarNavigation />}
+
             {isLoggedIn && <ProfileAvatarButton />}
 
             <Button
@@ -201,6 +183,8 @@ const NavbarBody: React.FC<Props> = ({ isBannerVisible }) => {
           </div>
         </div>
       </div>
+      {/* FORK: QUR-005 — progress bar / mobile reading tabs / pinned verses / tajweed rows */}
+      {isQuranReaderRoute && <ReaderHeaderSubRows />}
     </>
   );
 };

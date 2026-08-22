@@ -1,0 +1,15 @@
+// FORK: QUR-005 — styles for the reader middle section of the merged header.
+@use 'src/styles/breakpoints';
+
+.middleContainer {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-inline-size: 0;
+  justify-content: space-between;
+  padding-inline: var(--spacing-medium);
+
+  @include breakpoints.smallerThanTablet {
+    padding-inline: var(--spacing-xsmall);
+  }
+}

@@ -21,11 +21,11 @@ import {
   getMediaSessionMetaData,
   getAyahNumberByTimestamp,
 } from './audioPlayerMachineHelper';
-import { getProxiedAudioUrl } from '@/utils/audioGateway'; // FORK: configurable audio base URL
 import AudioPlayerContext from './types/AudioPlayerContext';
 import AudioPlayerEventType from './types/AudioPlayerEventType';
 
 import { StationType } from '@/components/Radio/types';
+import { getProxiedAudioUrl } from '@/utils/audioGateway'; // FORK: configurable audio base URL
 import { milliSecondsToSeconds, secondsToMilliSeconds } from '@/utils/datetime';
 import AudioData from 'types/AudioData';
 

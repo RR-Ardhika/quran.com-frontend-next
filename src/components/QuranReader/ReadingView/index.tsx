@@ -12,9 +12,10 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 
+import useHideAyahKeyboardReveal from '../hooks/useHideAyahKeyboardReveal'; // FORK: hide-ayah
+
 import { getStartingVerseTarget } from './hooks/startingVerseTarget';
 import usePageNavigation from './hooks/usePageNavigation';
-import useHideAyahKeyboardReveal from '../hooks/useHideAyahKeyboardReveal'; // FORK: hide-ayah
 import useScrollToVirtualizedVerse from './hooks/useScrollToVirtualizedVerse';
 import PageContainer from './PageContainer';
 import PageNavigationButtons from './PageNavigationButtons';
