@@ -141,7 +141,7 @@ const NavbarBody: React.FC = () => {
         <div className={styles.centerVertically}>
           <div className={styles.rightCTA}>
             {/* FORK: QUR-005 — settings button joins the right cluster on reader pages */}
-            {isQuranReaderRoute && <SettingsButton />}
+            {isQuranReaderRoute && <SettingsButton className={styles.settingsGear} />}
             {!isLoggedIn && <ProfileAvatarButton />}
             <Button
               tooltip={t('languages')}
