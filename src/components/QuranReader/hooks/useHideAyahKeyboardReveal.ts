@@ -1,10 +1,10 @@
 // FORK: hide-ayah — hold-to-peek keyboard reveal.
 //
-// Holding Alt reveals content without the mouse (release re-hides):
+// Holding Alt / Ctrl / Shift / Meta (Windows/Command) reveals content without the mouse
 //   - recitation playing/paused → the audio player's current (= last-played) ayah
 //   - recitation never started   → the whole mushaf page at the top of the viewport
 // The target is resolved once at keydown and pinned while held, so it never
-// chases the reciter. A window blur while Alt is held clears the reveal so it
+// chases the reciter. A window blur while a key is held clears the reveal so it
 // can never get stuck.
 import { useCallback, useContext, useEffect } from 'react';
 
@@ -22,6 +22,9 @@ import { AudioPlayerMachineContext } from 'src/xstate/AudioPlayerMachineContext'
 
 // Lines intersecting the viewport above this offset are considered hidden behind the navbar.
 const NAVBAR_OFFSET_PX = 80;
+
+// FORK: modifier keys that trigger the peek reveal (Alt, Ctrl, Shift, Windows/Command).
+const REVEAL_KEYS = new Set(['Alt', 'Control', 'Shift', 'Meta']);
 
 const isTypingTarget = (el: Element | null): boolean => {
   if (!el) return false;
@@ -46,7 +49,7 @@ const getTopmostVisibleLine = (): HTMLElement | null => {
 };
 
 /**
- * Hold-Alt-to-reveal for hide-ayah mode. Mount once in ReadingView.
+ * Hold-modifier-to-reveal for hide-ayah mode. Mount once in ReadingView.
  */
 const useHideAyahKeyboardReveal = (): void => {
   const dispatch = useDispatch();
@@ -78,12 +81,13 @@ const useHideAyahKeyboardReveal = (): void => {
     if (!isHideAyahEnabled) return undefined;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Alt' || event.repeat || isTypingTarget(document.activeElement)) return;
+      if (!REVEAL_KEYS.has(event.key) || event.repeat || isTypingTarget(document.activeElement))
+        return;
       event.preventDefault();
       revealTarget();
     };
     const onKeyUp = (event: KeyboardEvent) => {
-      if (event.key === 'Alt') clear();
+      if (REVEAL_KEYS.has(event.key)) clear();
     };
 
     window.addEventListener('keydown', onKeyDown);

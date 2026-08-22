@@ -53,6 +53,7 @@ Not affiliated with or endorsed by Quran.com / the Quran Foundation.
 <!-- Add new fork changes to the top of this list as they land. -->
 ### Changes in This Fork
 
+- **Hide-ayah: peek keybinds widened** — hold-to-peek now works with Alt, Ctrl, Shift, or the Windows/Command (Meta) key, not just Alt (`src/components/QuranReader/hooks/useHideAyahKeyboardReveal.ts`).
 - **Hide-ayah memorization mode** — opt-in toggle in the SettingsDrawer blurs Arabic glyph words in Reading (mushaf) view (word-by-word translation stays visible); hovering/tapping a word reveals its whole ayah. Persisted via redux-persist.
 - **Hide-ayah: hold-Alt keyboard peek** — holding Alt in Reading view reveals content without the mouse: the currently-reciting ayah while playing, the last-played ayah when paused, or the whole current page when nothing has played; releasing re-hides (see `src/components/QuranReader/hooks/useHideAyahKeyboardReveal.ts`).
 - **Hide-ayah: line-level hover reveal** — hovering reveals the hovered mushaf line's blurred words and stays revealed anywhere in the line (`ReadingView/Line.tsx` delegated hover), so resting in gaps between words no longer re-blurs.
