@@ -66,7 +66,7 @@ const QURAN_READER_STYLES_INITIAL_STATE: QuranReaderStyles = {
   hadithFontScale: 3,
   layersFontScale: 3,
   quranFont: QuranFont.MadaniV1,
-  mushafLines: MushafLines.SixteenLines,
+  mushafLines: MushafLines.FifteenLines, // FORK: QUR-005 — 15 lines default (was 16)
   isUsingDefaultFont: true,
   showTajweedRules: true,
 };
