@@ -53,6 +53,8 @@ Not affiliated with or endorsed by Quran.com / the Quran Foundation.
 <!-- Add new fork changes to the top of this list as they land. -->
 ### Changes in This Fork
 
+- **Reading-view page navigation buttons removed (QUR-005)** — the floating prev/next page buttons (`ReadingView/PageNavigationButtons`) are deleted, component included.
+
 - **Merged always-visible header (QUR-005)** — the Navbar and the reader ContextMenu are merged into a single static header hosted by the Navbar: logo | sidebar toggle + chapter nav | page info | reading-mode toggle | settings | profile | language | search | sidebar nav | menu, with the reading progress bar (desktop) and mobile reading tabs on their own rows. All scroll-based show/hide was removed (`GlobalScrollListener`, `useDebounceNavbarVisibility` usage, `MobileStickyItemsBar`, the floating reading-preference switcher, navbar auto-hide during auto-scroll). Reader pieces live in `src/components/Navbar/NavbarBody/ReaderHeaderSection.tsx`; the old `QuranReader/ContextMenu/index.tsx` was deleted (its subcomponents are reused).
 - **Fundraising/donate UI removed (QUR-005)** — the top Banner, the homepage + reader fundraising banners, and the donate CTA in the NavigationDrawer are gone.
 - **New reader defaults (QUR-005, fresh installs only — no persist migration)** — Arabic font scale 5 (was 3), translation font scale 1 (was 3), wbw font scale 5 (was 3); default translation = King Fahad Quran Complex, Indonesian (id 134, was 131 Clear Quran); wbw locale Indonesian (was English); wbw display = inline below-word translation only (was hover tooltip); word click = no audio (was play audio); mushaf = 15 lines (was 16).
