@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 
 import styles from './AudioPlayerSlider.module.scss';
 
+import HideAyahPeekButton from '@/components/QuranReader/HideAyahPeekButton'; // FORK: hide-ayah
 import Slider, { Direction, SliderVariant } from '@/dls/Slider';
 import useDirection from '@/hooks/useDirection';
 import { secondsFormatter } from '@/utils/datetime';
@@ -62,7 +63,11 @@ const AudioPlayerSlider = ({ isEmbedded }: AudioPlayerSliderProps): JSX.Element 
           direction={direction as Direction}
         />
       </div>
-      <span className={styles.remainingTime}>{secondsFormatter(duration, locale)}</span>
+      {/* FORK: hide-ayah — hold-to-peek button for touch devices, glued left of the remaining time */}
+      <span className={styles.peekAndRemainingTime}>
+        <HideAyahPeekButton className={styles.peekButton} />
+        <span className={styles.remainingTime}>{secondsFormatter(duration, locale)}</span>
+      </span>
     </div>
   );
 };

@@ -1,0 +1,5 @@
+// FORK: hide-ayah — the eye icon sits ~1px high inside the circle button; nudge it down.
+.icon {
+  /* stylelint-disable-next-line csstools/use-logical */
+  padding-top: 1px;
+}

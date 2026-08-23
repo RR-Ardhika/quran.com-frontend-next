@@ -53,6 +53,8 @@ Not affiliated with or endorsed by Quran.com / the Quran Foundation.
 <!-- Add new fork changes to the top of this list as they land. -->
 ### Changes in This Fork
 
+- **Hide-ayah: touch peek button (QUR-005)** — hold-to-peek eye button in the audio player slider (before the remaining time) for touch devices that have no hover; press-and-hold reveals (current ayah while reciting, else the topmost visible page), release re-hides. Only shown when hide-ayah is on. Shared peek logic lives in `src/components/QuranReader/hooks/useHideAyahPeek.ts`.
+
 - **Reading-view page navigation buttons removed (QUR-005)** — the floating prev/next page buttons (`ReadingView/PageNavigationButtons`) are deleted, component included.
 - **ChapterHeader event promo removed (QUR-005)** — the `ChapterEvent` promo card (and its `useChapterEvent` hook) shown at the top of a chapter page is deleted.
 

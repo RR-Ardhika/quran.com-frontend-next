@@ -51,3 +51,20 @@
     --line-height-normal
   ); // reset line height to normal, otherwise it will push the buttons in the audioplayer to the bottom
 }
+
+// FORK: hide-ayah — peek button sits left of the remaining time, out of flow so the
+// (taller) circle button never stretches the thin time row and pushes the player down.
+.peekAndRemainingTime {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.peekButton {
+  position: absolute;
+  inset-inline-end: 100%;
+  margin-inline-end: var(--spacing-xxsmall);
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+}
