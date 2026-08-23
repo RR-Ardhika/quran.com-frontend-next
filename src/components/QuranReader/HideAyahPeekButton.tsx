@@ -12,7 +12,7 @@ import styles from './HideAyahPeekButton.module.scss';
 
 import useHideAyahPeek from '@/components/QuranReader/hooks/useHideAyahPeek';
 import Button, { ButtonShape, ButtonVariant } from '@/dls/Button/Button';
-import ShowIcon from '@/icons/show.svg';
+import PeekEyeIcon from '@/icons/peek-eye.svg'; // FORK: own copy so the login show.svg can go away with the login feature
 import { selectIsHideAyahEnabled } from '@/redux/slices/QuranReader/hideAyah';
 
 /**
@@ -45,7 +45,7 @@ const HideAyahPeekButton = (): JSX.Element | null => {
         shape={ButtonShape.Circle}
         variant={ButtonVariant.Ghost}
       >
-        <ShowIcon className={styles.icon} />
+        <PeekEyeIcon className={styles.icon} />
       </Button>
     </span>
   );
