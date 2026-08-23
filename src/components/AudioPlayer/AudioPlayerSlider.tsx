@@ -65,7 +65,9 @@ const AudioPlayerSlider = ({ isEmbedded }: AudioPlayerSliderProps): JSX.Element 
       </div>
       {/* FORK: QUR-005 — grouped player actions (⋯, volume, prev, next, play, peek) before the remaining time */}
       <span className={styles.actionsAndRemainingTime}>
-        <AudioPlayerActionsGroup isEmbedded={isEmbedded} />
+        <span className={styles.actionsGroup}>
+          <AudioPlayerActionsGroup isEmbedded={isEmbedded} />
+        </span>
         <span className={styles.remainingTime}>{secondsFormatter(duration, locale)}</span>
       </span>
     </div>
