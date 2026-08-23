@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- FORK: QUR-005 close-item addition pushed this past 150 */
 import { useState, useMemo, useContext, useEffect } from 'react';
 
 import { useSelector } from '@xstate/react';
@@ -14,6 +15,7 @@ import OnboardingEvent from '@/components/Onboarding/OnboardingChecklist/hooks/O
 import { useOnboarding } from '@/components/Onboarding/OnboardingProvider';
 import PopoverMenu from '@/dls/PopoverMenu/PopoverMenu';
 import ChevronRightIcon from '@/icons/chevron-right.svg';
+import CloseIcon from '@/icons/close.svg'; // FORK: QUR-005
 import ExperienceIcon from '@/icons/experience.svg';
 import PersonIcon from '@/icons/person.svg';
 import { TestId } from '@/tests/test-ids';
@@ -135,6 +137,19 @@ const OverflowAudioPlayActionsMenuBody = ({
             <ChevronRightIcon />
           </div>
         </PopoverMenu.Item>,
+        // FORK: QUR-005 — close player moved from the controls row into the overflow menu (bottom)
+        <PopoverMenu.Divider key={6} />,
+        <PopoverMenu.Item
+          key={7}
+          icon={<CloseIcon />}
+          onClick={() => {
+            logButtonClick(`audio_player_overflow_menu_close`);
+            audioService.send({ type: 'CLOSE' });
+          }}
+          dataTestId={TestId.AUDIO_CLOSE_PLAYER}
+        >
+          {t('audio.player.close-audio-player')}
+        </PopoverMenu.Item>,
       ],
       [AudioPlayerOverflowMenu.AudioSpeed]: (
         <AudioPlaybackRateMenu onBack={() => setSelectedMenu(AudioPlayerOverflowMenu.Main)} />
@@ -149,6 +164,7 @@ const OverflowAudioPlayActionsMenuBody = ({
         <AudioExperienceMenu onBack={() => setSelectedMenu(AudioPlayerOverflowMenu.Main)} />
       ),
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- FORK: audioService is stable
     [t, playbackRate, isEmbedded],
   );
 

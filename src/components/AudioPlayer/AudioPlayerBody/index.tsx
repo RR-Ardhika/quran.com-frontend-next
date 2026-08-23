@@ -4,7 +4,6 @@ import { useSelector } from '@xstate/react';
 
 import AudioKeyBoardListeners from '../AudioKeyboardListeners';
 import AudioPlayerSlider from '../AudioPlayerSlider';
-import PlaybackControls from '../PlaybackControls';
 import RadioPlaybackControl from '../RadioPlaybackControl';
 
 import styles from './AudioPlayerBody.module.scss';
@@ -46,11 +45,10 @@ const AudioPlayerBody = ({ isEmbedded }: AudioPlayerBodyProps) => {
           </div>
         )}
       </div>
-      {isRadioMode ? (
+      {isRadioMode && (
         <RadioPlaybackControl radioActor={audioService.getSnapshot().context.radioActor} />
-      ) : (
-        <PlaybackControls isEmbedded={isEmbedded} />
       )}
+      {/* FORK: QUR-005 — PlaybackControls removed; its buttons live in AudioPlayerActionsGroup (slider row) */}
     </>
   );
 };

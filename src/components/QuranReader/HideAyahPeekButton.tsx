@@ -21,7 +21,7 @@ import { selectIsHideAyahEnabled } from '@/redux/slices/QuranReader/hideAyah';
  *
  * @returns {JSX.Element | null} the button, or null when hide-ayah is disabled
  */
-const HideAyahPeekButton = ({ className }: { className?: string }): JSX.Element | null => {
+const HideAyahPeekButton = (): JSX.Element | null => {
   const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
   const { peek, clear } = useHideAyahPeek();
 
@@ -30,7 +30,6 @@ const HideAyahPeekButton = ({ className }: { className?: string }): JSX.Element 
   return (
     <span
       role="presentation"
-      className={className}
       onPointerDown={(e) => {
         e.preventDefault();
         peek();

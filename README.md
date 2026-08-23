@@ -53,6 +53,8 @@ Not affiliated with or endorsed by Quran.com / the Quran Foundation.
 <!-- Add new fork changes to the top of this list as they land. -->
 ### Changes in This Fork
 
+- **Audio player actions regrouped (QUR-005)** — all player buttons now form one group in the slider row, before the remaining time: `⋯ overflow | volume | prev | next | play | 👁 peek` (`AudioPlayer/AudioPlayerActionsGroup/`). The old centered `PlaybackControls` row and the standalone close button are deleted; close-player moved into the overflow menu (bottom, keeps the `audio-close-player` test id). The group is a single component so a position setting (left/middle/right) can be added later.
+
 - **Hide-ayah: touch peek button (QUR-005)** — hold-to-peek eye button in the audio player slider (before the remaining time) for touch devices that have no hover; press-and-hold reveals (current ayah while reciting, else the topmost visible page), release re-hides. Only shown when hide-ayah is on. Shared peek logic lives in `src/components/QuranReader/hooks/useHideAyahPeek.ts`.
 
 - **Reading-view page navigation buttons removed (QUR-005)** — the floating prev/next page buttons (`ReadingView/PageNavigationButtons`) are deleted, component included.
