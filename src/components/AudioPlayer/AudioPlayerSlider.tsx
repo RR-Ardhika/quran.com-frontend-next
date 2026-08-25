@@ -4,6 +4,7 @@ import { useSelector } from '@xstate/react';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
+import AudioPlayerActionsGroup from './AudioPlayerActionsGroup'; // FORK: QUR-005
 import styles from './AudioPlayerSlider.module.scss';
 
 import Slider, { Direction, SliderVariant } from '@/dls/Slider';
@@ -62,7 +63,13 @@ const AudioPlayerSlider = ({ isEmbedded }: AudioPlayerSliderProps): JSX.Element 
           direction={direction as Direction}
         />
       </div>
-      <span className={styles.remainingTime}>{secondsFormatter(duration, locale)}</span>
+      {/* FORK: QUR-005 — grouped player actions (⋯, volume, prev, next, play, peek) before the remaining time */}
+      <span className={styles.actionsAndRemainingTime}>
+        <span className={styles.actionsGroup}>
+          <AudioPlayerActionsGroup isEmbedded={isEmbedded} />
+        </span>
+        <span className={styles.remainingTime}>{secondsFormatter(duration, locale)}</span>
+      </span>
     </div>
   );
 };

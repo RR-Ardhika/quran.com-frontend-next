@@ -12,12 +12,12 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 
+import useHideAyahKeyboardReveal from '../hooks/useHideAyahKeyboardReveal'; // FORK: hide-ayah
+
 import { getStartingVerseTarget } from './hooks/startingVerseTarget';
 import usePageNavigation from './hooks/usePageNavigation';
-import useHideAyahKeyboardReveal from '../hooks/useHideAyahKeyboardReveal'; // FORK: hide-ayah
 import useScrollToVirtualizedVerse from './hooks/useScrollToVirtualizedVerse';
 import PageContainer from './PageContainer';
-import PageNavigationButtons from './PageNavigationButtons';
 import styles from './ReadingView.module.scss';
 import ReadingViewSkeleton from './ReadingViewSkeleton';
 
@@ -38,7 +38,6 @@ import { selectIsUsingDefaultFont } from '@/redux/slices/QuranReader/styles';
 import { selectSelectedTranslations } from '@/redux/slices/QuranReader/translations';
 import QuranReaderStyles from '@/redux/types/QuranReaderStyles';
 import { QuranReaderDataType, ReadingPreference } from '@/types/QuranReader';
-import { logButtonClick } from '@/utils/eventLogger';
 import { getLineWidthClassName } from '@/utils/fontFaceHelper';
 import { normalizeQueryParam } from '@/utils/url';
 import { isValidVerseId, isValidVerseKey } from '@/utils/validator';
@@ -247,15 +246,7 @@ const ReadingView = ({
 
   useHideAyahKeyboardReveal(); // FORK: hide-ayah — hold Alt to peek at an ayah
 
-  const onPrevPageClicked = useCallback(() => {
-    logButtonClick('reading_view_prev_page_button');
-    scrollToPreviousPage();
-  }, [scrollToPreviousPage]);
-
-  const onNextPageClicked = useCallback(() => {
-    logButtonClick('reading_view_next_page_button');
-    scrollToNextPage();
-  }, [scrollToNextPage]);
+  // FORK: QUR-005 — page navigation buttons (and their click handlers) removed.
 
   const allowKeyboardNavigation = quranTextFontScale <= 5;
   const onUpClicked = useCallback(
@@ -369,12 +360,7 @@ const ReadingView = ({
           />
         )}
       </div>
-      {allowKeyboardNavigation && (
-        <PageNavigationButtons
-          scrollToNextPage={onNextPageClicked}
-          scrollToPreviousPage={onPrevPageClicked}
-        />
-      )}
+      {/* FORK: QUR-005 — page navigation buttons removed */}
     </StartingVerseHighlightContext.Provider>
   );
 };

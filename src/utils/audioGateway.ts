@@ -1,8 +1,14 @@
+import { resolveGatewayBase } from './gatewayResolver';
+
 // FORK: rewrite known audio CDN URLs through a configurable base URL when
 // NEXT_PUBLIC_AUDIO_BASE_URL is set. Defaults to the untouched upstream URL
 // when unset, so stock behavior is preserved. Pattern: <base>/audio/<host>/<path>.
 
-const AUDIO_CDN_HOSTS = ['audio.qurancdn.com', 'verses.quran.foundation', 'download.quranicaudio.com'];
+const AUDIO_CDN_HOSTS = [
+  'audio.qurancdn.com',
+  'verses.quran.foundation',
+  'download.quranicaudio.com',
+];
 
 /**
  * @param {string} url absolute audio URL on a known CDN host
@@ -10,7 +16,8 @@ const AUDIO_CDN_HOSTS = ['audio.qurancdn.com', 'verses.quran.foundation', 'downl
  */
 // eslint-disable-next-line import/prefer-default-export
 export const getProxiedAudioUrl = (url: string): string => {
-  const base = process.env.NEXT_PUBLIC_AUDIO_BASE_URL;
+  // Supports a comma-separated candidate list; the first reachable one wins (see gatewayResolver).
+  const base = resolveGatewayBase(process.env.NEXT_PUBLIC_AUDIO_BASE_URL);
   if (!base) {
     return url;
   }

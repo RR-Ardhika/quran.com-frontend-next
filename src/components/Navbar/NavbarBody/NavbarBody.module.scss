@@ -40,10 +40,13 @@
 .leftCTA {
   display: flex;
   margin-inline-start: var(--spacing-medium);
+  // FORK: QUR-005 — breathing room between the logo and the merged reader section
+  margin-inline-end: var(--spacing-medium);
   align-items: center;
 
   @include breakpoints.tablet {
     margin-inline-start: var(--spacing-mega);
+    margin-inline-end: var(--spacing-large);
   }
 }
 
@@ -54,6 +57,11 @@
 
   > button {
     margin-inline-start: var(--spacing-micro);
+  }
+
+  // FORK: QUR-005 — extra room only between the settings gear and the sign-in/avatar
+  .settingsGear {
+    margin-inline-end: var(--spacing-small);
   }
 
   @include breakpoints.tablet {

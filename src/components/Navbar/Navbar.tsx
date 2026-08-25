@@ -1,49 +1,41 @@
 import React from 'react';
 
 import classNames from 'classnames';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import LanguageDrawer from './LanguageDrawer/LanguageDrawer';
-import MobileStickyItemsBar from './MobileStickyItemsBar';
 import styles from './Navbar.module.scss';
 import NavbarBody from './NavbarBody';
 import NavigationDrawer from './NavigationDrawer/NavigationDrawer';
 import SearchDrawer from './SearchDrawer/SearchDrawer';
 import SettingsDrawer from './SettingsDrawer/SettingsDrawer';
 
-import { useOnboarding } from '@/components/Onboarding/OnboardingProvider';
-import useDebounceNavbarVisibility from '@/hooks/useDebounceNavbarVisibility';
-import { selectIsBannerVisible } from '@/redux/slices/banner';
 import {
   selectIsLanguageDrawerOpen,
   selectIsNavigationDrawerOpen,
   selectIsSettingsDrawerOpen,
-  selectNavbar,
 } from '@/redux/slices/navbar';
 
+// FORK: QUR-005 — merged, always-visible header. MobileStickyItemsBar, the
+// scroll-driven show/hide (useDebounceNavbarVisibility + hiddenNav) and the
+// fundraising Banner were all removed; the navbar is now static and
+// NavbarBody hosts the merged ContextMenu row on reader pages.
 const Navbar = () => {
-  const { isActive } = useOnboarding();
-  const { isVisible: isNavbarVisible } = useSelector(selectNavbar, shallowEqual);
-  const isBannerVisible = useSelector(selectIsBannerVisible);
   const isNavigationDrawerOpen = useSelector(selectIsNavigationDrawerOpen);
   const isSettingsDrawerOpen = useSelector(selectIsSettingsDrawerOpen);
   const isLanguageDrawerOpen = useSelector(selectIsLanguageDrawerOpen);
-  // Use the shared hook to debounce navbar visibility changes
-  const showNavbar = useDebounceNavbarVisibility(isNavbarVisible, isActive);
 
   return (
     <>
-      <MobileStickyItemsBar />
       <div className={styles.emptySpacePlaceholder} />
       <nav
         className={classNames(styles.container, {
-          [styles.hiddenNav]: !showNavbar,
           [styles.dimmed]: isNavigationDrawerOpen || isSettingsDrawerOpen || isLanguageDrawerOpen,
         })}
         data-testid="navbar"
-        data-isvisible={showNavbar}
+        data-isvisible
       >
-        <NavbarBody isBannerVisible={isBannerVisible} />
+        <NavbarBody />
       </nav>
       {/* Drawers rendered outside nav to avoid transform containment issues */}
       <SearchDrawer />

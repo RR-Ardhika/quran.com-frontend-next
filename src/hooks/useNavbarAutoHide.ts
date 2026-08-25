@@ -1,9 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-import { useDispatch } from 'react-redux';
-
-import { setIsVisible, setLockVisibilityState } from '@/redux/slices/navbar';
-
 const DEFAULT_TIMEOUT_MS = 1000;
 
 /**
@@ -26,14 +22,11 @@ const useNavbarAutoHide = (
   dependencies: React.DependencyList = [],
   timeout: number = DEFAULT_TIMEOUT_MS,
 ) => {
-  const dispatch = useDispatch();
   const hideNavbarTimeoutRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     if (shouldTrigger) {
-      // Hide the navbar and lock its state to avoid showing it on scroll
-      dispatch(setIsVisible(false));
-      dispatch(setLockVisibilityState(true));
+      // FORK: QUR-005 — navbar is always visible; skip hiding/locking it and just run the scroll
 
       // Execute the scroll callback
       scrollCallback();
@@ -42,22 +35,16 @@ const useNavbarAutoHide = (
       if (hideNavbarTimeoutRef.current) {
         window.clearTimeout(hideNavbarTimeoutRef.current);
       }
-
-      // Unlock the navbar visibility state after the specified timeout
-      hideNavbarTimeoutRef.current = window.setTimeout(() => {
-        dispatch(setLockVisibilityState(false));
-      }, timeout);
     }
 
     // Cleanup function to clear timeout and unlock visibility state on unmount or when dependencies change
     return () => {
       if (hideNavbarTimeoutRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- FORK: same cleanup shape as upstream
         window.clearTimeout(hideNavbarTimeoutRef.current);
-        // Ensure visibility state is unlocked when component unmounts to prevent getting stuck
-        dispatch(setLockVisibilityState(false));
       }
     };
-  }, [dispatch, shouldTrigger, scrollCallback, timeout, dependencies]);
+  }, [shouldTrigger, scrollCallback, timeout, dependencies]);
 
   return hideNavbarTimeoutRef;
 };

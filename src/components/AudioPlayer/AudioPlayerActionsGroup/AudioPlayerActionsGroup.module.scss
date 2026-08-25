@@ -1,0 +1,20 @@
+@use 'src/styles/breakpoints';
+
+// FORK: QUR-005 — one contiguous audio actions group (⋯, volume, prev, next, play, peek).
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.actionItem {
+  display: inline-flex;
+  align-items: center;
+}
+
+.actionItem + .actionItem {
+  margin-inline-start: var(--spacing-xxsmall);
+  @include breakpoints.desktop {
+    margin-inline-start: var(--spacing-xsmall);
+  }
+}

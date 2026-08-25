@@ -51,3 +51,21 @@
     --line-height-normal
   ); // reset line height to normal, otherwise it will push the buttons in the audioplayer to the bottom
 }
+
+// FORK: QUR-005 — the remaining time stays on its original text line; the actions group
+// (⋯, volume, prev, next, play, peek) hangs off its left, out of flow and centered on the
+// text, so the taller buttons never stretch the row or shift the times.
+.actionsAndRemainingTime {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.actionsGroup {
+  position: absolute;
+  inset-inline-end: 100%;
+  margin-inline-end: var(--spacing-xsmall); // FORK: 10px gap to the remaining time
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+}

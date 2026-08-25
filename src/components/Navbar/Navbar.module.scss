@@ -8,7 +8,8 @@
 .container {
   inset-block-start: 0;
   position: fixed;
-  block-size: var(--navbar-height);
+  // FORK: QUR-005 — height grows with merged rows (progress bar / mobile tabs)
+  min-block-size: var(--navbar-height);
   inline-size: 100%;
   transition: var(--transition-regular);
   background: var(--color-background-elevated);
@@ -21,14 +22,3 @@
   }
 }
 
-.hiddenNav {
-  // https://ptgamr.github.io/2014-09-13-translate3d-vs-translate-performance/
-  transform: translate3d(0, calc(-1 * var(--navbar-container-height)), 0);
-  @include breakpoints.smallerThanTablet {
-    // TODO: we should add the banner height here if it's shown
-    // transform: translate3d(0, calc(-1 * (var(--navbar-container-height) + var(--banner-height))), 0);
-    transform: translate3d(0, calc(-1 * (var(--navbar-container-height))), 0);
-    // Fast collapse with ease-in
-    transition: transform var(--transition-fast) ease-in 0ms;
-  }
-}
