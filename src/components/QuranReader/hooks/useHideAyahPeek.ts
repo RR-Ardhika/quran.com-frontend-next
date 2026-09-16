@@ -2,7 +2,8 @@
 // touch peek button in the audio player).
 //
 // Peek resolves its target once when invoked and pins it until cleared:
-//   - recitation playing/paused → the audio player's current (= last-played) ayah
+//   - recitation playing/paused → the line containing the currently-playing word,
+//     plus its neighbor lines (same page, ±1) revealed by consumers
 //   - recitation never started   → the whole mushaf page at the top of the viewport
 import { useCallback, useContext } from 'react';
 
@@ -11,9 +12,8 @@ import { useDispatch } from 'react-redux';
 
 import {
   setKeyboardRevealedPageNumber,
-  setKeyboardRevealedVerseKey,
+  setKeyboardRevealedLineKey,
 } from '@/redux/slices/QuranReader/readingViewVerse';
-import { makeVerseKey } from '@/utils/verse';
 import { selectIsAudioPlayerVisible } from 'src/xstate/actors/audioPlayer/selectors';
 import { AudioPlayerMachineContext } from 'src/xstate/AudioPlayerMachineContext';
 
@@ -37,6 +37,24 @@ const getTopmostVisibleLine = (): HTMLElement | null => {
 };
 
 /**
+ * Resolve the Reading-view line element containing the currently-playing word.
+ * Word spans carry `data-word-location="surah:ayah:position"` (QuranWord) and live
+ * inside the line container, which carries `data-verse-key` and `id={lineKey}`.
+ *
+ * @returns {HTMLElement | null} the line element, or null when the word is not rendered
+ */
+const getPlayingWordLine = (
+  surah: number,
+  ayahNumber: number,
+  wordPosition: number,
+): HTMLElement | null => {
+  const wordEl = document.querySelector<HTMLElement>(
+    `[data-word-location="${surah}:${ayahNumber}:${wordPosition}"]`,
+  );
+  return wordEl?.closest<HTMLElement>('[data-verse-key]') ?? null;
+};
+
+/**
  * Peek reveal for hide-ayah mode: `peek` pins a reveal target, `clear` removes it.
  *
  * @returns {{ peek: () => void, clear: () => void }} peek controls
@@ -48,10 +66,18 @@ const useHideAyahPeek = (): { peek: () => void; clear: () => void } => {
 
   const peek = useCallback(() => {
     const snapshot = audioService.getSnapshot();
-    const { surah, ayahNumber } = snapshot.context;
+    const { surah, ayahNumber, wordLocation } = snapshot.context;
     if (isAudioPlayerVisible && surah && ayahNumber) {
-      // Playing/paused: pin the current (= last-played) ayah.
-      dispatch(setKeyboardRevealedVerseKey(makeVerseKey(String(surah), ayahNumber)));
+      // Playing/paused: pin the line containing the currently-playing word.
+      // Consumers reveal that line plus its neighbors (same page, ±1).
+      const wordPosition = Number(wordLocation);
+      if (wordPosition) {
+        const lineEl = getPlayingWordLine(surah, ayahNumber, wordPosition);
+        if (lineEl?.id) {
+          dispatch(setKeyboardRevealedLineKey(lineEl.id));
+          return;
+        }
+      }
       return;
     }
     // Never played: reveal the whole page at the top of the viewport.
@@ -62,7 +88,7 @@ const useHideAyahPeek = (): { peek: () => void; clear: () => void } => {
   }, [dispatch, audioService, isAudioPlayerVisible]);
 
   const clear = useCallback(() => {
-    dispatch(setKeyboardRevealedVerseKey(null));
+    dispatch(setKeyboardRevealedLineKey(null));
     dispatch(setKeyboardRevealedPageNumber(null));
   }, [dispatch]);
 

@@ -8,9 +8,10 @@ export type ReadingViewVerseState = {
   selectedVerseKey: string | null;
   // FORK: hide-ayah — line currently revealed by mouse hover ("Page{page}-Line{line}" key)
   hideAyahHoveredLineKey: string | null;
-  // FORK: hide-ayah — ayah revealed by holding Alt while playing/paused (transient)
-  keyboardRevealedVerseKey: string | null;
-  // FORK: hide-ayah — mushaf page revealed by holding Alt when nothing has played (transient)
+  // FORK: hide-ayah — anchor line revealed by holding a modifier while playing/paused (transient).
+  // The anchor line plus its neighbors (same page, ±1) are revealed by consumers.
+  keyboardRevealedLineKey: string | null;
+  // FORK: hide-ayah — mushaf page revealed by holding a modifier when nothing has played (transient)
   keyboardRevealedPageNumber: number | null;
 };
 
@@ -18,7 +19,7 @@ export const initialState: ReadingViewVerseState = {
   hoveredVerseKey: null,
   selectedVerseKey: null,
   hideAyahHoveredLineKey: null,
-  keyboardRevealedVerseKey: null,
+  keyboardRevealedLineKey: null,
   keyboardRevealedPageNumber: null,
 };
 
@@ -49,20 +50,20 @@ const readingViewVerse = createSlice({
         hideAyahHoveredLineKey: payload,
       };
     },
-    // FORK: hide-ayah — pin/clear the Alt-revealed ayah (playing/paused states)
-    setKeyboardRevealedVerseKey: (state, { payload }: PayloadAction<string | null>) => {
+    // FORK: hide-ayah — pin/clear the modifier-revealed anchor line (playing/paused states)
+    setKeyboardRevealedLineKey: (state, { payload }: PayloadAction<string | null>) => {
       return {
         ...state,
-        keyboardRevealedVerseKey: payload,
+        keyboardRevealedLineKey: payload,
         keyboardRevealedPageNumber: null,
       };
     },
-    // FORK: hide-ayah — pin/clear the Alt-revealed page (never-played state)
+    // FORK: hide-ayah — pin/clear the modifier-revealed page (never-played state)
     setKeyboardRevealedPageNumber: (state, { payload }: PayloadAction<number | null>) => {
       return {
         ...state,
         keyboardRevealedPageNumber: payload,
-        keyboardRevealedVerseKey: null,
+        keyboardRevealedLineKey: null,
       };
     },
     clearAllHighlights: () => {
@@ -84,8 +85,8 @@ export const selectHideAyahHoveredLineKey = (state: RootState) =>
   state.readingViewVerse.hideAyahHoveredLineKey;
 
 // FORK: hide-ayah
-export const selectKeyboardRevealedVerseKey = (state: RootState) =>
-  state.readingViewVerse.keyboardRevealedVerseKey;
+export const selectKeyboardRevealedLineKey = (state: RootState) =>
+  state.readingViewVerse.keyboardRevealedLineKey;
 
 // FORK: hide-ayah
 export const selectKeyboardRevealedPageNumber = (state: RootState) =>
@@ -96,7 +97,7 @@ export const {
   setReadingViewSelectedVerseKey,
   clearAllHighlights,
   setHideAyahHoveredLineKey, // FORK: hide-ayah
-  setKeyboardRevealedVerseKey, // FORK: hide-ayah
+  setKeyboardRevealedLineKey, // FORK: hide-ayah
   setKeyboardRevealedPageNumber, // FORK: hide-ayah
 } = readingViewVerse.actions;
 export default readingViewVerse.reducer;

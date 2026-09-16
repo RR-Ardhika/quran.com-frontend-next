@@ -5,6 +5,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 // FORK: QUR-005 — ContextMenu merged into the Navbar; fundraising banner removed.
 import { VerseTrackerContextProvider } from './contexts/VerseTrackerContext';
 import DebuggingObserverWindow from './DebuggingObserverWindow';
+import useJuzPositionResume from './hooks/useJuzPositionResume'; // FORK: hide-ayah (QUR-006)
 import useSyncChapterPage from './hooks/useSyncChapterPage';
 import Notes from './Notes/Notes';
 import styles from './QuranReader.module.scss';
@@ -58,6 +59,8 @@ const QuranReader = ({
   const isSingleVerse = quranReaderDataType === QuranReaderDataType.Verse;
 
   useSyncChapterPage(initialData);
+  // FORK: hide-ayah (QUR-006) — resume the juz scroll position on juz pages (no-op elsewhere)
+  useJuzPositionResume(quranReaderDataType === QuranReaderDataType.Juz ? String(id) : undefined);
 
   return (
     <>
