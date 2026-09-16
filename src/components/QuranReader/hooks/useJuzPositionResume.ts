@@ -101,6 +101,13 @@ const useJuzPositionResume = (
   useEffect(() => {
     if (!isJuz) return undefined;
 
+    // The browser's native scroll restoration (fires after load with the
+    // previous scroll position) fights our programmatic jump — opt out while
+    // we manage the position ourselves.
+    window.history.scrollRestoration = 'manual';
+
+    if (!isJuz) return undefined;
+
     // startingVerse is a chapter-page feature; a stale value left in the URL
     // (e.g. after a reload) would scroll the juz page to the wrong verse — strip it.
     if (router.query.startingVerse) {
@@ -179,12 +186,34 @@ const useJuzPositionResume = (
         // FORK DEBUG (QUR-006)
         // eslint-disable-next-line no-console
         console.log(`[QUR-006 RESUME] attempt ${attempts} → didScroll:`, didScroll);
-        if (didScroll) clearInterval(timer);
+        if (didScroll) {
+          clearInterval(timer);
+          // Virtuoso jumps by index using estimated item heights before the list
+          // has measured real ones, so the first jump lands short of the target.
+          // Re-scroll once the list settles to correct the accumulated offset.
+          const correct = (delay: number) =>
+            setTimeout(() => {
+              scrollToVerseTarget({
+                target,
+                virtuosoRef,
+                pagesVersesRange,
+                verses,
+                isUsingDefaultFont,
+                initialDataFirstPage: initialData.verses[0]?.pageNumber,
+                hasPinnedVerses: hasPinnedVersesRef.current,
+                isNavbarVisible: isNavbarVisibleRef.current,
+                fetchVersePageNumber: fetchPage,
+              });
+            }, delay);
+          correct(500);
+          correct(1500);
+        }
       });
     }, ATTEMPT_INTERVAL_MS);
 
     return () => {
       clearInterval(timer);
+      window.history.scrollRestoration = 'auto';
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isJuz, resourceId]);
