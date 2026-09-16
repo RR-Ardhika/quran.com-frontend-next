@@ -17,11 +17,9 @@ import migrations from './migrations';
 import audioPlayerPersistConfig from './slices/AudioPlayer/persistConfig';
 import audioPlayerState from './slices/AudioPlayer/state';
 import ayahWidget from './slices/ayahWidget';
-import banner from './slices/banner';
 import commandBarPersistConfig from './slices/CommandBar/persistConfig';
 import commandBar from './slices/CommandBar/state';
 import defaultSettings from './slices/defaultSettings';
-import fundraisingBanner from './slices/fundraisingBanner';
 import guestBookmark from './slices/guestBookmark';
 import mediaMaker from './slices/mediaMaker';
 import microphone from './slices/microphone';
@@ -70,9 +68,7 @@ const persistConfig = {
     SliceName.WELCOME_MESSAGE,
     SliceName.DEFAULT_SETTINGS,
     SliceName.SIDEBAR_NAVIGATION,
-    SliceName.BANNER,
     SliceName.HIDE_AYAH,
-    SliceName.FUNDRAISING_BANNER,
     SliceName.SESSION,
     SliceName.BOOKMARKS,
     SliceName.USER_DATA_SYNC,
@@ -106,8 +102,6 @@ export const rootReducer = combineReducers({
   fontFaces,
   sidebarNavigation,
   readingViewVerse,
-  banner,
-  fundraisingBanner,
   session,
   persistGateHydration,
   revelationOrder,

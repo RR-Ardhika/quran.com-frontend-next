@@ -83,14 +83,6 @@ select option {
   margin: 0 auto;
 }
 
-// FORK: QUR-006 — banners were removed in QUR-005; the navbar container height is just the navbar's height, with or without banner state
-.bannerActive {
-  --navbar-container-height: var(--navbar-height);
-}
-
-.desktopStandaloneBannerActive {
-  --navbar-container-height: var(--navbar-height);
-}
 
 
 .navbarVisible {
