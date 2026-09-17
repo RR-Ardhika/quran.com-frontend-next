@@ -53,6 +53,18 @@ Not affiliated with or endorsed by Quran.com / the Quran Foundation.
 <!-- Add new fork changes to the top of this list as they land. -->
 ### Changes in This Fork
 
+- **Hide-ayah: line-level modifier peek (QUR-006)** — while a recitation is playing/paused, holding Alt/Ctrl/Shift/Meta now reveals the line containing the currently-playing word plus one neighbor line above and below (clamped to the same mushaf page), instead of the whole ayah. The never-played case is unchanged (whole-page reveal). `keyboardRevealedVerseKey` in `readingViewVerse` is replaced by `keyboardRevealedLineKey` (`Page{n}-Line{n}`); anchor resolution lives in `useHideAyahPeek` via the playing word's `data-word-location`.
+
+- **Hide-ayah: peek fallback chain (QUR-006)** — Alt-peek during playback no longer reveals nothing when the playing word's exact span is unavailable: it falls back to word 1 of the playing ayah (covers unset `wordLocation` during verse transitions and virtualized-out pages), then to the whole-page reveal used by the never-played case (`useHideAyahPeek.ts`).
+
+- **Juz position resume (QUR-006)** — reloading a juz page (`/juz/N`) scrolls to the persisted last-read verse when it belongs to that juz; otherwise the page opens at the top. The last-read verse is read directly from the redux-persist localStorage entry (avoids the mount-time intersection-observer race), the page number is resolved locally from the juz's page lookup, and the jump drives the reader's virtualized scroll (`scrollToVerseTarget`) directly with retry + post-settle corrective re-scrolls — Virtuoso's first by-index jump lands short of deep pages because item heights are still estimates. Browser scroll restoration is disabled on juz pages so it cannot undo the jump; stale `startingVerse` params are stripped. Hook: `src/components/QuranReader/hooks/useJuzPositionResume.ts`, wired in `ReadingView/index.tsx`.
+
+- **Navbar/banner sizing fixed (QUR-006)** — `--navbar-container-height` no longer adds banner height (banners were removed in QUR-005 but the CSS still reserved 45–54px for them), fixing the phantom gap between the navbar and the sidebar navigation / reader content. The sidebar's stale offset and top padding are removed (`SidebarNavigation.module.scss`), and the Navbar `emptySpacePlaceholder` div is deleted.
+
+- **Banner system removed (QUR-006)** — the `banner` and `fundraisingBanner` redux slices, their persist wiring, the `bannerActive`/`desktopStandaloneBannerActive` classes, and the dead components using them (`components/Banner`, `components/Fundraising`, `components/DonatePopup`, `HomePageMessage`, `HomePageWelcomeMessage`) are deleted.
+
+- **ESLint: function line-length limit off (QUR-006)** — `react-func/max-lines-per-function` disabled globally (`.eslintrc.json`).
+
 - **Audio player actions regrouped (QUR-005)** — all player buttons now form one group in the slider row, before the remaining time: `⋯ overflow | volume | prev | next | play | 👁 peek` (`AudioPlayer/AudioPlayerActionsGroup/`). The old centered `PlaybackControls` row and the standalone close button are deleted; close-player moved into the overflow menu (bottom, keeps the `audio-close-player` test id). The group is a single component so a position setting (left/middle/right) can be added later.
 
 - **Hide-ayah: touch peek button (QUR-005)** — hold-to-peek eye button in the audio player slider (before the remaining time) for touch devices that have no hover; press-and-hold reveals (current ayah while reciting, else the topmost visible page), release re-hides. Only shown when hide-ayah is on. Shared peek logic lives in `src/components/QuranReader/hooks/useHideAyahPeek.ts`.
