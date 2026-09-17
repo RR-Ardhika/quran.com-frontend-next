@@ -126,18 +126,6 @@ const useScrollToVirtualizedReadingView = (
   );
 
   useEffect(() => {
-    // FORK DEBUG (QUR-006): dump guard state at every effect run
-    // eslint-disable-next-line no-console
-    console.log(
-      '[QUR-006 SCROLL] effect run | loading:',
-      isPagesLookupLoading,
-      '| virtuoso:',
-      !!virtuosoRef.current,
-      '| pagesLookup:',
-      Object.keys(pagesVersesRange).length,
-      '| target:',
-      startingVerseTarget,
-    );
     // If we have the page lookup data and virtuoso is mounted.
     if (!isPagesLookupLoading && virtuosoRef.current && Object.keys(pagesVersesRange).length) {
       // If startingVerse is present in the URL (chapter format or multi-surah format).
@@ -150,16 +138,6 @@ const useScrollToVirtualizedReadingView = (
         return;
       }
       // Trigger initial scroll for both chapter and multi-surah target formats.
-      // FORK DEBUG (QUR-006)
-      // eslint-disable-next-line no-console
-      console.log(
-        '[QUR-006 SCROLL] startingVerse effect firing, target:',
-        startingVerseTarget,
-        'dataType:',
-        quranReaderDataType,
-        'pagesLookup:',
-        Object.keys(pagesVersesRange).length,
-      );
       scrollToVerse(startingVerseTarget, true);
     }
   }, [

@@ -119,18 +119,11 @@ const useJuzPositionResume = (
     }
 
     const lastReadVerse = getPersistedLastReadVerse();
-    // FORK DEBUG (QUR-006)
-    // eslint-disable-next-line no-console
-    console.log('[QUR-006 RESUME] mount juz', resourceId, 'persisted:', lastReadVerse);
     if (!lastReadVerse) return undefined;
 
     // Only restore when the last-read verse belongs to the juz being viewed.
     const lastReadJuz = getJuzNumberByHizb(Number(lastReadVerse.hizb));
-    if (lastReadJuz !== Number(resourceId)) {
-      // eslint-disable-next-line no-console
-      console.log('[QUR-006 RESUME] different juz — skipping');
-      return undefined;
-    }
+    if (lastReadJuz !== Number(resourceId)) return undefined;
 
     const [chapterId, verseNumber] = getVerseAndChapterNumbersFromKey(lastReadVerse.verseKey);
 
@@ -151,9 +144,6 @@ const useJuzPositionResume = (
       return entry ? Number(entry[0]) : undefined;
     };
     const localPage = resolvePageLocally();
-    // FORK DEBUG (QUR-006)
-    // eslint-disable-next-line no-console
-    console.log('[QUR-006 RESUME] local page for', lastReadVerse.verseKey, ':', localPage);
     // Wrap the fetcher: prefer the locally-resolved page, fall back to the API.
     const fetchPage = (chapterIdArg: string, verseNumberArg: number) =>
       localPage
@@ -183,9 +173,6 @@ const useJuzPositionResume = (
         isNavbarVisible: isNavbarVisibleRef.current,
         fetchVersePageNumber: fetchPage,
       }).then((didScroll) => {
-        // FORK DEBUG (QUR-006)
-        // eslint-disable-next-line no-console
-        console.log(`[QUR-006 RESUME] attempt ${attempts} → didScroll:`, didScroll);
         if (didScroll) {
           clearInterval(timer);
           // Virtuoso jumps by index using estimated item heights before the list

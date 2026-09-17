@@ -93,10 +93,6 @@ const useSyncReadingProgress = ({ isReadingPreference }: UseSyncReadingProgressP
   const onElementVisible = useCallback(
     (element: Element) => {
       const lastReadVerse = getObservedVersePayload(element);
-      // FORK DEBUG (QUR-006): log what the observer saves while scrolling
-      // eslint-disable-next-line no-console
-      console.log('[QUR-006 SAVE]', lastReadVerse.verseKey, 'hizb:', lastReadVerse.hizb, element);
-
       // Guard against elements without proper data attributes
       if (!lastReadVerse.verseKey) {
         return;
