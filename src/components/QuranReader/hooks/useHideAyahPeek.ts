@@ -70,17 +70,23 @@ const useHideAyahPeek = (): { peek: () => void; clear: () => void } => {
     if (isAudioPlayerVisible && surah && ayahNumber) {
       // Playing/paused: pin the line containing the currently-playing word.
       // Consumers reveal that line plus its neighbors (same page, ±1).
-      const wordPosition = Number(wordLocation);
-      if (wordPosition) {
+      // wordLocation can be unset/0 between verses or before the first word
+      // event, and the word span may be unrendered (its page virtualized out)
+      // — fall back to the ayah's first word, then to a whole-page reveal.
+      const tryWord = (wordPosition: number) => {
         const lineEl = getPlayingWordLine(surah, ayahNumber, wordPosition);
         if (lineEl?.id) {
           dispatch(setKeyboardRevealedLineKey(lineEl.id));
-          return;
+          return true;
         }
-      }
-      return;
+        return false;
+      };
+      const wordPosition = Number(wordLocation);
+      if (wordPosition && tryWord(wordPosition)) return;
+      if (tryWord(1)) return;
     }
-    // Never played: reveal the whole page at the top of the viewport.
+    // Never played (or playing word not rendered): reveal the whole page at the
+    // top of the viewport.
     const topLine = getTopmostVisibleLine();
     if (topLine?.dataset.page) {
       dispatch(setKeyboardRevealedPageNumber(Number(topLine.dataset.page)));
