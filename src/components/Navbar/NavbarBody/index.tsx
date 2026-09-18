@@ -7,6 +7,8 @@ import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
 import { useDispatch, useSelector } from 'react-redux';
 
+import packageJson from '../../../../package.json';
+
 import styles from './NavbarBody.module.scss';
 import ProfileAvatarButton from './ProfileAvatarButton';
 import { ReaderHeaderMiddle, ReaderHeaderSubRows } from './ReaderHeaderSection';
@@ -134,6 +136,9 @@ const NavbarBody: React.FC = () => {
         <div className={styles.centerVertically}>
           <div className={styles.leftCTA}>
             <NavbarLogoWrapper />
+            {/* FORK: QUR-006 — fork version shown next to the logo */}
+            {/* eslint-disable-next-line i18next/no-literal-string -- version number, not copy */}
+            <span className={styles.forkVersion}>{`v${packageJson.version}`}</span>
           </div>
         </div>
         {/* FORK: QUR-005 — merged reader items (chapter nav, page info, mode toggle) */}
