@@ -13,6 +13,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 
 import useHideAyahKeyboardReveal from '../hooks/useHideAyahKeyboardReveal'; // FORK: hide-ayah
+import useJuzPositionResume from '../hooks/useJuzPositionResume'; // FORK: hide-ayah (QUR-006)
 
 import { getStartingVerseTarget } from './hooks/startingVerseTarget';
 import usePageNavigation from './hooks/usePageNavigation';
@@ -242,6 +243,19 @@ const ReadingView = ({
     quranFont,
     mushafLines,
     isLoading,
+  );
+
+  // FORK: hide-ayah (QUR-006) — juz-mode position resume
+  useJuzPositionResume(
+    quranReaderDataType,
+    resourceId,
+    virtuosoRef,
+    pagesVersesRange,
+    verses,
+    initialData,
+    isUsingDefaultFont,
+    quranFont,
+    mushafLines,
   );
 
   useHideAyahKeyboardReveal(); // FORK: hide-ayah — hold Alt to peek at an ayah

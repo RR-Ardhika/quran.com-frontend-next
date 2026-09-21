@@ -93,7 +93,6 @@ const useSyncReadingProgress = ({ isReadingPreference }: UseSyncReadingProgressP
   const onElementVisible = useCallback(
     (element: Element) => {
       const lastReadVerse = getObservedVersePayload(element);
-
       // Guard against elements without proper data attributes
       if (!lastReadVerse.verseKey) {
         return;

@@ -33,7 +33,7 @@ import {
 } from '@/redux/slices/QuranReader/readingPreferences';
 import {
   selectHideAyahHoveredLineKey, // FORK: hide-ayah
-  selectKeyboardRevealedVerseKey, // FORK: hide-ayah
+  selectKeyboardRevealedLineKey, // FORK: hide-ayah
   selectKeyboardRevealedPageNumber, // FORK: hide-ayah
   setReadingViewHoveredVerseKey,
 } from '@/redux/slices/QuranReader/readingViewVerse';
@@ -133,15 +133,25 @@ const QuranWord = ({
   const isTranslationMode = readingPreference === ReadingPreference.Translation;
   const isArabicReadingMode = readingPreference === ReadingPreference.Reading;
   // FORK: hide-ayah mode — blur the Arabic glyph in Reading mode; revealed when its line
-  // is hovered, or when pinned by holding Alt (ayah while playing/paused, page otherwise).
+  // is hovered, or when pinned by holding a modifier (the playing word's line ±1 neighbors
+  // while playing/paused, the whole page when nothing has played).
   // Boolean selector: only the words of the previous/current revealed target re-render.
   const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
-  const isRevealed = useSelector(
-    (state: RootState) =>
+  const isRevealed = useSelector((state: RootState) => {
+    if (
       `Page${word.pageNumber}-Line${word.lineNumber}` === selectHideAyahHoveredLineKey(state) ||
-      word.verseKey === selectKeyboardRevealedVerseKey(state) ||
-      word.pageNumber === selectKeyboardRevealedPageNumber(state),
-  );
+      word.pageNumber === selectKeyboardRevealedPageNumber(state)
+    ) {
+      return true;
+    }
+    // FORK: hide-ayah — modifier peek: this word's line within ±1 of the anchor line, same page
+    const revealedLineKey = selectKeyboardRevealedLineKey(state);
+    if (!revealedLineKey) return false;
+    const match = /^Page(\d+)-Line(\d+)$/.exec(revealedLineKey);
+    if (!match || Number(match[1]) !== word.pageNumber) return false;
+    const lineDelta = word.lineNumber - Number(match[2]);
+    return lineDelta >= -1 && lineDelta <= 1;
+  });
   const shouldBlurGlyph =
     isHideAyahEnabled && isArabicReadingMode && word.charTypeName === CharType.Word && !isRevealed;
   const isRecitationEnabled = wordClickFunctionality === WordClickFunctionality.PlayAudio;

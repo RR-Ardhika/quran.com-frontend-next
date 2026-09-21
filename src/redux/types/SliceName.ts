@@ -7,8 +7,7 @@ enum SliceName {
   TAFSIRS = 'tafsirs',
   AUDIO_PLAYER_STATE = 'audioPlayerState',
   DEFAULT_SETTINGS = 'defaultSettings',
-  BANNER = 'banner',
-  FUNDRAISING_BANNER = 'fundraisingBanner',
+  // FORK: QUR-006 — BANNER/FUNDRAISING_BANNER removed (banner system dismantled)
   NAVBAR = 'navbar',
   SESSION = 'session',
   BOOKMARKS = 'bookmarks',

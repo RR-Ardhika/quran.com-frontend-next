@@ -34,7 +34,8 @@ const AudioPlayerSlider = ({ isEmbedded }: AudioPlayerSliderProps): JSX.Element 
   return (
     <div className={styles.container}>
       <span className={styles.currentTime} data-testid="audio-elapsed">
-        {secondsFormatter(elapsed, locale)}
+        {/* FORK: QUR-006 — left time group now shows elapsed / total */}
+        {`${secondsFormatter(elapsed, locale)} / ${secondsFormatter(duration, locale)}`}
       </span>
       <div className={sliderContainerClass}>
         <Slider
@@ -68,7 +69,10 @@ const AudioPlayerSlider = ({ isEmbedded }: AudioPlayerSliderProps): JSX.Element 
         <span className={styles.actionsGroup}>
           <AudioPlayerActionsGroup isEmbedded={isEmbedded} />
         </span>
-        <span className={styles.remainingTime}>{secondsFormatter(duration, locale)}</span>
+        {/* FORK: QUR-006 — right side shows a live countdown of the duration left */}
+        <span className={styles.remainingTime} data-testid="audio-remaining">
+          {`-${secondsFormatter(Math.max(duration - elapsed, 0), locale)}`}
+        </span>
       </span>
     </div>
   );

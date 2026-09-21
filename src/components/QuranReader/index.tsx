@@ -58,7 +58,6 @@ const QuranReader = ({
   const isSingleVerse = quranReaderDataType === QuranReaderDataType.Verse;
 
   useSyncChapterPage(initialData);
-
   return (
     <>
       <FontPreLoader isQuranReader locale={lang} />

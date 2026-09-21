@@ -83,20 +83,7 @@ select option {
   margin: 0 auto;
 }
 
-.bannerActive {
-  --navbar-container-height: calc(var(--navbar-height) + var(--banner-height));
 
-  @include breakpoints.tablet {
-    --banner-height: var(--banner-height-desktop);
-    --navbar-container-height: var(--navbar-height);
-  }
-}
-
-.desktopStandaloneBannerActive {
-  @include breakpoints.tablet {
-    --navbar-container-height: calc(var(--navbar-height) + var(--banner-height));
-  }
-}
 
 .navbarVisible {
   @include breakpoints.smallerThanTablet {

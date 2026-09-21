@@ -11,7 +11,8 @@ $top-menu-height-home: $navbar-height;
 $context-menu-height-home: 0;
 
 // Non-homepage heights (with sections menu and progress bar)
-$top-menu-height: calc(var(--top-bar-height) + $navbar-height);
+// FORK: QUR-006 — the old top-bar was removed in QUR-005 (merged header); offset by the navbar only
+$top-menu-height: $navbar-height;
 
 $isNavbarVisible: var(--isNavbarVisible);
 
@@ -101,7 +102,7 @@ $isNavbarVisible: var(--isNavbarVisible);
   position: fixed;
   inset-block-start: 0;
   inset-inline-start: 0;
-  padding-block-start: calc(1.5 * var(--spacing-mega));
+  // FORK: QUR-006 — no top padding so content starts flush under the navbar
   background-color: var(--color-background-elevated);
   overflow-x: hidden;
   z-index: var(--z-index-sticky);

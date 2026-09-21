@@ -50,6 +50,16 @@
   }
 }
 
+// FORK: QUR-006 — version label next to the logo
+.forkVersion {
+  color: var(--color-text-default);
+  opacity: 0.45;
+  font-size: var(--font-size-xsmall);
+  align-self: center;
+  white-space: nowrap;
+  margin-inline-start: var(--spacing-micro);
+}
+
 .rightCTA {
   display: flex;
   margin-inline-end: var(--spacing-medium);

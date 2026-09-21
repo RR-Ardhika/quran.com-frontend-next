@@ -27,7 +27,9 @@ const Navbar = () => {
 
   return (
     <>
-      <div className={styles.emptySpacePlaceholder} />
+      {/* FORK: QUR-006 — emptySpacePlaceholder removed; it reserved the container height under
+           the fixed navbar, but reader pages already pad themselves and the banner-era sizing
+           made it taller than the real navbar (phantom gap). */}
       <nav
         className={classNames(styles.container, {
           [styles.dimmed]: isNavigationDrawerOpen || isSettingsDrawerOpen || isLanguageDrawerOpen,
