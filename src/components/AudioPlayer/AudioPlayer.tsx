@@ -1,10 +1,11 @@
 /* eslint-disable max-lines */
 /* eslint-disable react/no-multi-comp */
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 
 import { useSelector } from '@xstate/react';
 import classNames from 'classnames';
 import dynamic from 'next/dynamic';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { useSelector as useReduxSelector } from 'react-redux';
 
 import styles from './AudioPlayer.module.scss';
@@ -56,6 +57,13 @@ const AudioPlayer = () => {
   const audioService = useContext(AudioPlayerMachineContext);
   const isVisible = useSelector(audioService, (state) => state.matches('VISIBLE'));
   const isStudyModeOpen = useReduxSelector(selectStudyModeIsOpen);
+  // FORK: when no audio session exists (player hidden), the player's keyboard listeners are
+  // not mounted, so the browser default turns Space into page-scroll. Swallow Space here so
+  // it does nothing instead; when the player is visible, AudioKeyboardListeners handles it.
+  const swallowSpace = useCallback((event: KeyboardEvent) => {
+    event.preventDefault();
+  }, []);
+  useHotkeys('space', swallowSpace, { enabled: !isVisible && !isStudyModeOpen });
   const { isActive } = useOnboarding();
 
   useEffect(() => {
