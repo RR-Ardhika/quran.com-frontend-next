@@ -69,3 +69,19 @@
   transform: translateY(-50%);
   display: inline-flex;
 }
+
+// FORK: centered track label (surah · reciter) in the slider row; absolute so it never
+// affects the flex layout of the times/actions. Hidden on small screens where the row is cramped.
+.trackLabel {
+  position: absolute;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  line-height: var(--line-height-normal);
+  max-inline-size: 40%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @include breakpoints.smallerThanTablet {
+    display: none;
+  }
+}

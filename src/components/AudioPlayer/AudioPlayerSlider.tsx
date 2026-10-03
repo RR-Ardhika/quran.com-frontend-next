@@ -1,17 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
 import { useSelector } from '@xstate/react';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
+import useTranslation from 'next-translate/useTranslation';
 
 import AudioPlayerActionsGroup from './AudioPlayerActionsGroup'; // FORK: QUR-005
 import styles from './AudioPlayerSlider.module.scss';
 
+import { getAvailableReciters } from '@/api';
 import Slider, { Direction, SliderVariant } from '@/dls/Slider';
 import useDirection from '@/hooks/useDirection';
+import useGetChaptersData from '@/hooks/useGetChaptersData';
+import { getChapterData } from '@/utils/chapter';
 import { secondsFormatter } from '@/utils/datetime';
 import { logEvent } from '@/utils/eventLogger';
 import { AudioPlayerMachineContext } from 'src/xstate/AudioPlayerMachineContext';
+import Reciter from 'types/Reciter';
 
 interface AudioPlayerSliderProps {
   isEmbedded?: boolean;
@@ -27,6 +32,41 @@ const AudioPlayerSlider = ({ isEmbedded }: AudioPlayerSliderProps): JSX.Element 
   const downloadProgress = useSelector(audioService, (state) => state.context.downloadProgress);
   const duration = useSelector(audioService, (state) => state.context.duration);
 
+  // FORK: centered track label — what is playing (surah) and by whom (reciter).
+  const { lang } = useTranslation();
+  const chaptersData = useGetChaptersData(lang);
+  const playingSurah = useSelector(audioService, (state) => state.context.surah);
+  const playingAyah = useSelector(audioService, (state) => state.context.ayahNumber);
+  const playingReciterId = useSelector(audioService, (state) => state.context.audioData?.reciterId);
+  const [reciters, setReciters] = useState<Reciter[]>([]);
+  useEffect(() => {
+    let isActive = true;
+    getAvailableReciters(lang)
+      .then((res) => {
+        if (isActive) setReciters(res.reciters);
+      })
+      .catch(() => {});
+    return () => {
+      isActive = false;
+    };
+  }, [lang]);
+  const trackLabel = useMemo(() => {
+    const surahName = playingSurah
+      ? getChapterData(chaptersData, String(playingSurah))?.transliteratedName
+      : null;
+    const reciter = reciters.find((candidate) => candidate.id === playingReciterId);
+    const reciterName = reciter
+      ? `${reciter.translatedName.name}${
+          reciter.style.name !== 'Murattal' ? ` - ${reciter.style.name}` : ''
+        }`
+      : null;
+    if (!surahName && !reciterName) return null;
+    // FORK: "<reciter> · Surah <name> [<n>:<ayah>]" — the verse number is live.
+    return [reciterName, `Surah ${surahName} [${playingSurah}:${playingAyah}]`]
+      .filter(Boolean)
+      .join(' · ');
+  }, [chaptersData, playingSurah, playingAyah, reciters, playingReciterId]);
+
   const sliderContainerClass = classNames(styles.sliderContainer, {
     [styles.embeddedSliderContainer]: isEmbedded,
   });
@@ -37,6 +77,12 @@ const AudioPlayerSlider = ({ isEmbedded }: AudioPlayerSliderProps): JSX.Element 
         {/* FORK: QUR-006 — left time group now shows elapsed / total */}
         {`${secondsFormatter(elapsed, locale)} / ${secondsFormatter(duration, locale)}`}
       </span>
+      {/* FORK: centered track label (surah · reciter) — absolutely positioned, no layout impact */}
+      {trackLabel && !isEmbedded && (
+        <span className={styles.trackLabel} title={trackLabel} data-testid="audio-track-label">
+          {trackLabel}
+        </span>
+      )}
       <div className={sliderContainerClass}>
         <Slider
           showThumbs={false}
