@@ -15,3 +15,10 @@
   margin-block-start: var(--spacing-small);
   padding-inline-start: var(--spacing-medium);
 }
+
+/* FORK: hide-ayah — blur-strength slider label */
+.sliderLabel {
+  margin-block-end: var(--spacing-xxsmall);
+  font-size: var(--font-size-xsmall);
+  color: var(--color-text-faded);
+}

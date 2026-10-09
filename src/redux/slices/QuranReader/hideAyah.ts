@@ -11,11 +11,21 @@ export type HideAyahState = {
    * `isHideAyahEnabled` is on.
    */
   isHideWbwEnabled: boolean;
+  /**
+   * FORK: hide-ayah blur strength in px — the text-shadow radius of the obscured glyph
+   * (and wbw, in harder mode). 10 is the original hard-coded value.
+   */
+  blurStrength: number;
 };
+
+export const HIDE_AYAH_BLUR_MIN = 4;
+export const HIDE_AYAH_BLUR_MAX = 24;
+export const HIDE_AYAH_BLUR_DEFAULT = 10;
 
 const initialState: HideAyahState = {
   isHideAyahEnabled: false,
   isHideWbwEnabled: false,
+  blurStrength: HIDE_AYAH_BLUR_DEFAULT,
 };
 
 // FORK: hide-ayah memorization mode. When enabled, Arabic glyph words in
@@ -42,14 +52,30 @@ export const hideAyahSlice = createSlice({
       ...state,
       isHideWbwEnabled: action.payload,
     }),
+    // FORK: blur strength — clamped so a persisted/foreign value can't break the range
+    setBlurStrength: (state: HideAyahState, action: PayloadAction<number>) => ({
+      ...state,
+      blurStrength: Math.min(
+        HIDE_AYAH_BLUR_MAX,
+        Math.max(HIDE_AYAH_BLUR_MIN, Math.round(action.payload)),
+      ),
+    }),
   },
 });
 
-export const { setIsHideAyahEnabled, toggleIsHideAyahEnabled, setIsHideWbwEnabled } =
-  hideAyahSlice.actions;
+export const {
+  setIsHideAyahEnabled,
+  toggleIsHideAyahEnabled,
+  setIsHideWbwEnabled,
+  setBlurStrength,
+} = hideAyahSlice.actions;
 
 export const selectIsHideAyahEnabled = (state: RootState) => state.hideAyah.isHideAyahEnabled;
 
 export const selectIsHideWbwEnabled = (state: RootState) => state.hideAyah.isHideWbwEnabled;
+
+// FORK: fall back to the default so state persisted before this existed still renders
+export const selectHideAyahBlurStrength = (state: RootState) =>
+  state.hideAyah.blurStrength ?? HIDE_AYAH_BLUR_DEFAULT;
 
 export default hideAyahSlice.reducer;

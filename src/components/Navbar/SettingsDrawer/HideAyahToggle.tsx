@@ -5,9 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './HideAyahToggle.module.scss';
 
 import Toggle from '@/components/dls/Toggle/Toggle';
+import Slider, { SliderVariant } from '@/dls/Slider';
 import {
+  HIDE_AYAH_BLUR_MAX,
+  HIDE_AYAH_BLUR_MIN,
+  selectHideAyahBlurStrength,
   selectIsHideAyahEnabled,
   selectIsHideWbwEnabled,
+  setBlurStrength,
   setIsHideAyahEnabled,
   setIsHideWbwEnabled,
 } from '@/redux/slices/QuranReader/hideAyah';
@@ -18,6 +23,7 @@ const HideAyahToggle: React.FC = () => {
   const dispatch = useDispatch();
   const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
   const isHideWbwEnabled = useSelector(selectIsHideWbwEnabled);
+  const blurStrength = useSelector(selectHideAyahBlurStrength);
 
   return (
     <div className={styles.container}>
@@ -40,6 +46,22 @@ const HideAyahToggle: React.FC = () => {
             label="Also blur word-by-word (harder mode)"
             checked={isHideWbwEnabled}
             onChange={(checked) => dispatch(setIsHideWbwEnabled(checked))}
+          />
+        </div>
+      )}
+      {/* FORK: hide-ayah blur strength — drives --hide-ayah-blur-strength on the reading line */}
+      {isHideAyahEnabled && (
+        <div className={styles.subToggle}>
+          {/* eslint-disable-next-line i18next/no-literal-string -- FORK: personal fork, English-only */}
+          <p className={styles.sliderLabel}>{`Blur strength: ${blurStrength}px`}</p>
+          <Slider
+            label="hide-ayah-blur-strength"
+            variant={SliderVariant.Secondary}
+            min={HIDE_AYAH_BLUR_MIN}
+            max={HIDE_AYAH_BLUR_MAX}
+            step={1}
+            value={[blurStrength]}
+            onValueChange={([value]) => dispatch(setBlurStrength(value))}
           />
         </div>
       )}
