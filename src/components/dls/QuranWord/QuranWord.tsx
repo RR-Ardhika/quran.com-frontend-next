@@ -24,7 +24,10 @@ import useIsMobile from '@/hooks/useIsMobile';
 import ArrowIcon from '@/icons/arrow.svg';
 import { RootState } from '@/redux/RootState';
 import { selectShowTooltipWhenPlayingAudio } from '@/redux/slices/AudioPlayer/state';
-import { selectIsHideAyahEnabled } from '@/redux/slices/QuranReader/hideAyah';
+import {
+  selectIsHideAyahEnabled,
+  selectIsHideWbwEnabled,
+} from '@/redux/slices/QuranReader/hideAyah';
 import {
   selectInlineDisplayWordByWordPreferences,
   selectReadingPreference,
@@ -137,6 +140,7 @@ const QuranWord = ({
   // while playing/paused, the whole page when nothing has played).
   // Boolean selector: only the words of the previous/current revealed target re-render.
   const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
+  const isHideWbwEnabled = useSelector(selectIsHideWbwEnabled);
   const isRevealed = useSelector((state: RootState) => {
     if (
       `Page${word.pageNumber}-Line${word.lineNumber}` === selectHideAyahHoveredLineKey(state) ||
@@ -154,6 +158,13 @@ const QuranWord = ({
   });
   const shouldBlurGlyph =
     isHideAyahEnabled && isArabicReadingMode && word.charTypeName === CharType.Word && !isRevealed;
+  // FORK: hide-ayah harder mode — blur the inline wbw text too, using the same reveal state
+  // as the glyph so a peek always shows the full ayah (glyph + wbw).
+  // eslint-disable-next-line max-len
+  const shouldBlurWbw =
+    shouldBlurGlyph &&
+    isHideWbwEnabled &&
+    (showWordByWordTranslation || showWordByWordTransliteration);
   const isRecitationEnabled = wordClickFunctionality === WordClickFunctionality.PlayAudio;
 
   // creating wordLocation instead of using `word.location` because
@@ -504,8 +515,18 @@ const QuranWord = ({
       </Wrapper>
       {isWordByWordAllowed && (
         <>
-          {showWordByWordTransliteration && <InlineWordByWord text={word.transliteration?.text} />}
-          {showWordByWordTranslation && <InlineWordByWord text={word.translation?.text} />}
+          {showWordByWordTransliteration && (
+            <InlineWordByWord
+              text={word.transliteration?.text}
+              className={classNames({ [styles.hideAyahBlurred]: shouldBlurWbw })}
+            />
+          )}
+          {showWordByWordTranslation && (
+            <InlineWordByWord
+              text={word.translation?.text}
+              className={classNames({ [styles.hideAyahBlurred]: shouldBlurWbw })}
+            />
+          )}
         </>
       )}
     </div>
