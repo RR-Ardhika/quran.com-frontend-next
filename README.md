@@ -45,7 +45,7 @@ This project is the frontend for Quran.com. It is built on top of [Next.js](http
 This is a personal fork of [`quran/quran.com-frontend-next`](https://github.com/quran/quran.com-frontend-next) for personal, non-commercial use.
 
 - **Code**: upstream declares MIT (`package.json` + license badge), though the repo ships no LICENSE file. Modifications in this fork are marked with `// FORK:` comments and are MIT-licensed by the fork author.
-- **Content & data**: Quran text, translations, tafsir, and audio fetched via quran.com APIs are governed by the [quran.com Terms](https://quran.com/terms-and-conditions) — **personal, non-commercial use only**. Do not host a public instance of this fork.
+- **Content & data**: Quran text, translations, tafsir, and audio fetched via quran.com APIs are governed by the [quran.com Terms](https://quran.com/terms-and-conditions) — personal, non-commercial use.
 - **Fonts**: the mushaf fonts under `public/fonts` are from the King Fahd Glorious Quran Printing Complex and carry their own license; they are excluded from this fork. Restore them from upstream for local development.
 
 Not affiliated with or endorsed by Quran.com / the Quran Foundation.

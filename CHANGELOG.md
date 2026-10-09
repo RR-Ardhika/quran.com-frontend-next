@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.5.0] - 2026-10-09
+
+### Added
+
+- **Audio: track label** — the player's middle area now shows what is playing: `<reciter> · Surah <name> [<n>:<ayah>]` with a live ayah number. Reciter resolved from `getAvailableReciters(lang)` by the machine's `audioData.reciterId` (style suffix only when non-Murattal); surah from the chapters data + machine context. Semibold, normal text color, ellipsis-truncated; hidden below tablet width and in the embedded player (`AudioPlayer/AudioPlayerSlider.tsx`).
+- **Hide-ayah: wbw harder mode** — new optional sub-toggle "Also blur word-by-word (harder mode)" (settings drawer, shown while hide-ayah is on). When on, the inline word-by-word translation/transliteration is blurred with the same reveal state as the glyph, so a peek reveals glyph + wbw together; tooltips untouched. New persisted `isHideWbwEnabled` state, reset when hide-ayah is turned off (`redux/slices/QuranReader/hideAyah.ts`, `SettingsDrawer/HideAyahToggle.tsx`, `dls/QuranWord/QuranWord.tsx`).
+- **Hide-ayah: blur strength** — the blur radius is now adjustable: a 4–24px slider (default 10, the previous fixed value) in the settings drawer while hide-ayah is on. Strength travels as a `--hide-ayah-blur-strength` CSS var set once per reading line (`ReadingView/Line.tsx`); `QuranWord.module.scss` falls back to 10px outside the reader.
+
+### Changed
+
+- **Audio: row not dimmed** — the slider row's text (elapsed/remaining times) now uses the normal text color instead of upstream's faded color, matching the track label and the top navbar (`AudioPlayerSlider.module.scss`).
+
+### Fixed
+
+- **Audio: Space no longer scrolls the page** when no audio session exists (player hidden) — the always-mounted `AudioPlayer.tsx` swallows Space via a hotkey while hidden and study mode is closed; Space still toggles play/pause whenever the player is visible.
+- **Hide-ayah: modifier peek gated** — holding Alt/Ctrl/Shift/Meta now does nothing until an audio session exists (`useHideAyahKeyboardReveal.ts`); once audio has started, peek behaves as before.
+
 ## [0.4.0] - 2026-09-18
 
 ### Added

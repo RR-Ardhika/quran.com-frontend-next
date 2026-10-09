@@ -4,13 +4,16 @@
 // (see useHideAyahPeek for how the target is resolved). The target is pinned while held,
 // so it never chases the reciter. A window blur while a key is held clears the reveal so
 // it can never get stuck.
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
+import { useSelector as useXstateSelector } from '@xstate/react';
 import { useSelector } from 'react-redux';
 
 import useHideAyahPeek from './useHideAyahPeek';
 
 import { selectIsHideAyahEnabled } from '@/redux/slices/QuranReader/hideAyah';
+import { selectIsAudioPlayerVisible } from 'src/xstate/actors/audioPlayer/selectors';
+import { AudioPlayerMachineContext } from 'src/xstate/AudioPlayerMachineContext';
 
 // FORK: modifier keys that trigger the peek reveal (Alt, Ctrl, Shift, Windows/Command).
 const REVEAL_KEYS = new Set(['Alt', 'Control', 'Shift', 'Meta']);
@@ -26,10 +29,14 @@ const isTypingTarget = (el: Element | null): boolean => {
  */
 const useHideAyahKeyboardReveal = (): void => {
   const isHideAyahEnabled = useSelector(selectIsHideAyahEnabled);
+  const audioService = useContext(AudioPlayerMachineContext);
+  // FORK: no reveal when no audio session exists — Alt (and its variants) do nothing
+  // until the player is visible (audio started at least once).
+  const isAudioPlayerVisible = useXstateSelector(audioService, selectIsAudioPlayerVisible);
   const { peek, clear } = useHideAyahPeek();
 
   useEffect(() => {
-    if (!isHideAyahEnabled) return undefined;
+    if (!isHideAyahEnabled || !isAudioPlayerVisible) return undefined;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (!REVEAL_KEYS.has(event.key) || event.repeat || isTypingTarget(document.activeElement)) {
@@ -51,7 +58,7 @@ const useHideAyahKeyboardReveal = (): void => {
       window.removeEventListener('blur', clear);
       clear();
     };
-  }, [isHideAyahEnabled, peek, clear]);
+  }, [isHideAyahEnabled, isAudioPlayerVisible, peek, clear]);
 };
 
 export default useHideAyahKeyboardReveal;

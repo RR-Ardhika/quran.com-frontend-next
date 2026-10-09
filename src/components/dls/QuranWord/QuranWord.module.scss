@@ -76,7 +76,9 @@ div.popoverTrigger {
 
 // FORK: hide-ayah memorization mode — obscure the Arabic glyph, keep it in the DOM.
 // Uses text-shadow instead of filter:blur() — much cheaper with hundreds of words per page.
+// FORK: radius comes from --hide-ayah-blur-strength (set on the reading line from the redux
+// slice); the 10px fallback is the original hard-coded value for consumers outside the reader.
 .hideAyahBlurred {
   color: transparent;
-  text-shadow: 0 0 10px var(--color-text-default);
+  text-shadow: 0 0 var(--hide-ayah-blur-strength, 10px) var(--color-text-default);
 }

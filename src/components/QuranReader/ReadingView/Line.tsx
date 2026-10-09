@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */ // FORK: hide-ayah — delegation handlers pushed the file past the upstream cap
-import { memo, RefObject, useCallback, useContext, useRef } from 'react';
+import { memo, CSSProperties, RefObject, useCallback, useContext, useRef } from 'react';
 
 import { useSelector as useXstateSelector } from '@xstate/react';
 import classNames from 'classnames';
@@ -19,7 +19,10 @@ import useScroll, { SMOOTH_SCROLL_TO_CENTER } from '@/hooks/useScrollToElement';
 import { RootState } from '@/redux/RootState';
 import { selectEnableAutoScrolling } from '@/redux/slices/AudioPlayer/state';
 // FORK: hide-ayah — line-level delegated hover
-import { selectIsHideAyahEnabled } from '@/redux/slices/QuranReader/hideAyah';
+import {
+  selectHideAyahBlurStrength,
+  selectIsHideAyahEnabled,
+} from '@/redux/slices/QuranReader/hideAyah';
 import { selectInlineDisplayWordByWordPreferences } from '@/redux/slices/QuranReader/readingPreferences';
 import {
   selectHideAyahHoveredLineKey,
@@ -120,6 +123,13 @@ const Line = ({
   const onLineMouseLeave = useCallback(() => {
     if (isHideAyahEnabled) dispatch(setHideAyahHoveredLineKey(null));
   }, [dispatch, isHideAyahEnabled]);
+  // FORK: hide-ayah blur strength — publish it as a CSS var on the line (one inline style per
+  // line, cascading to both the glyph and the inline wbw) instead of per-word inline styles.
+  const blurStrength = useSelector(selectHideAyahBlurStrength);
+  const hideAyahBlurVars = isHideAyahEnabled
+    ? // eslint-disable-next-line @typescript-eslint/naming-convention -- CSS custom property
+      ({ '--hide-ayah-blur-strength': `${blurStrength}px` } as CSSProperties)
+    : undefined;
 
   return (
     <div
@@ -141,6 +151,7 @@ const Line = ({
         // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events -- FORK: hide-ayah hover reveal; keyboard equivalent is the Alt-hold peek
         onMouseOver={onLineMouseOver} // FORK: hide-ayah
         onMouseLeave={onLineMouseLeave} // FORK: hide-ayah
+        style={hideAyahBlurVars} // FORK: hide-ayah blur strength
         className={classNames(styles.line, {
           [styles.mobileInline]: isBigTextLayout,
           [styles.fixedWidth]: !isWordByWordLayout,

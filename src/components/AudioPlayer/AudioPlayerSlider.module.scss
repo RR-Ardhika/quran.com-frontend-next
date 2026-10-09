@@ -6,7 +6,9 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  color: var(--color-text-faded);
+  // FORK: default text color so left/right times match the navbar-style track label (mid);
+  // upstream had --color-text-faded which dimmed the whole row
+  color: var(--color-text-default);
   font-size: var(--font-size-xsmall);
   min-block-size: var(
     --font-size-xsmall
@@ -68,4 +70,22 @@
   inset-block-start: 50%;
   transform: translateY(-50%);
   display: inline-flex;
+}
+
+// FORK: centered track label (surah · reciter) in the slider row; absolute so it never
+// affects the flex layout of the times/actions. Hidden on small screens where the row is cramped.
+// Font styled like the reader header middle (PageInfo .primaryInfo): semibold, default body font.
+.trackLabel {
+  position: absolute;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  max-inline-size: 40%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @include breakpoints.smallerThanTablet {
+    display: none;
+  }
 }
